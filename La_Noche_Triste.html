@@ -1,0 +1,1331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La Noche Triste</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --obsidian:#07070a; --charcoal:#1c1d22; --slate:#2a3340; --storm:#16202b;
+    --blood:#8a0f14; --blood-hi:#c1121f; --gold:#c9a227; --gold-hi:#f2c94c; --jade:#2f5d50;
+    --c1:#1b2c44; --c2:#04060c;
+  }
+  html,body{margin:0;height:100%;overflow:hidden;background:var(--obsidian);cursor:pointer;user-select:none}
+  #sky,#world,#fx,#flash,#vignette,#black{position:fixed;inset:0;width:100vw;height:100vh;display:block}
+  #sky{background:radial-gradient(ellipse 85% 75% at 50% 42%,var(--c1),var(--c2))}
+  #fx,#flash,#vignette,#grain,#black,#credit{pointer-events:none}
+  #flash{background:var(--blood-hi);mix-blend-mode:screen;opacity:0}
+  #vignette{background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.5) 76%,rgba(0,0,0,.9) 100%)}
+  #grain{position:fixed;left:-60px;top:-60px;width:calc(100vw + 120px);height:calc(100vh + 120px);opacity:.08;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    animation:grain .6s steps(5) infinite}
+  @keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-30px,18px)}40%{transform:translate(22px,-26px)}60%{transform:translate(-14px,-40px)}80%{transform:translate(36px,12px)}100%{transform:translate(0,0)}}
+  #black{background:#000;opacity:1}
+
+  #title{position:fixed;left:0;right:0;top:17vh;display:flex;justify-content:center;opacity:0;pointer-events:none;font-family:'Cormorant Garamond',Georgia,serif}
+  .t-name{font-size:clamp(52px,7.6vw,132px);font-weight:300;letter-spacing:.04em;white-space:nowrap;color:#ece6d8;text-shadow:0 2px 24px rgba(0,0,0,.65)}
+  .t-name span{display:inline-block}
+  #credit{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;opacity:0;font-family:'Cormorant Garamond',Georgia,serif}
+  .cr-by{font-size:clamp(15px,1.35vw,22px);font-weight:500;letter-spacing:.42em;text-transform:uppercase;color:#aaa497;padding-left:.42em}
+  .cr-name{font-size:clamp(40px,5vw,84px);font-weight:300;letter-spacing:.03em;white-space:nowrap;color:#ece6d8}
+  .cr-name span{display:inline-block}
+</style>
+</head>
+<body>
+<div id="sky"></div>
+
+<svg id="world" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- sky -->
+    <linearGradient id="nightSkyG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#03050b"/><stop offset=".45" stop-color="#0c182a"/><stop offset=".8" stop-color="#1e3048"/><stop offset="1" stop-color="#2c3d52"/>
+    </linearGradient>
+    <radialGradient id="milkyG"><stop offset="0" stop-color="#c8d4ea" stop-opacity=".13"/><stop offset="1" stop-color="#c8d4ea" stop-opacity="0"/></radialGradient>
+    <radialGradient id="skyMoonG"><stop offset="0" stop-color="#f1e6c4" stop-opacity=".35"/><stop offset="1" stop-color="#f1e6c4" stop-opacity="0"/></radialGradient>
+    <linearGradient id="valleyLakeG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a5670"/><stop offset="1" stop-color="#0f1a24"/></linearGradient>
+    <mask id="crescentM"><circle cx="1250" cy="170" r="46" fill="#fff"/><circle cx="1270" cy="158" r="42" fill="#000"/></mask>
+
+    <!-- map -->
+    <radialGradient id="landG" cx="50%" cy="50%" r="60%"><stop offset="0" stop-color="#211f17"/><stop offset="1" stop-color="#0b0b09"/></radialGradient>
+    <radialGradient id="lakeG" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#21433d"/><stop offset=".6" stop-color="#132826"/><stop offset="1" stop-color="#0a1615"/>
+    </radialGradient>
+    <radialGradient id="cloudShadowG"><stop offset="0" stop-color="#000" stop-opacity=".38"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+    <pattern id="cropA" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="4" fill="#2f4d2b"/><path d="M0 2H4" stroke="#24391f" stroke-width="1"/></pattern>
+    <pattern id="cropB" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="4" fill="#3b5a2e"/><path d="M0 2H4" stroke="#2b4422" stroke-width="1"/></pattern>
+    <pattern id="cropC" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="4" fill="#57562b"/><path d="M2 0V4" stroke="#43421f" stroke-width="1"/></pattern>
+    <pattern id="stairP" width="3" height="3" patternUnits="userSpaceOnUse"><rect width="3" height="3" fill="#c4b48a"/><path d="M0 0V3" stroke="#6d6248" stroke-width="1"/></pattern>
+    <pattern id="pavP" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#4a4232"/><path d="M0 0H8M0 0V8" stroke="#5c5341" stroke-width=".6"/></pattern>
+    <clipPath id="islandClip"><path id="islandClipPath"/></clipPath>
+    <clipPath id="lakeClip"><path id="lakeClipPath"/></clipPath>
+
+    <!-- treasury -->
+    <radialGradient id="goldGlow">
+      <stop offset="0" stop-color="#f2c94c" stop-opacity=".6"/><stop offset=".45" stop-color="#c9a227" stop-opacity=".18"/><stop offset="1" stop-color="#c9a227" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="barG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe79a"/><stop offset=".45" stop-color="#d4a92c"/><stop offset="1" stop-color="#6e500f"/>
+    </linearGradient>
+    <radialGradient id="faceG" cx=".45" cy=".4"><stop offset="0" stop-color="#ffe9a8"/><stop offset="1" stop-color="#a67a14"/></radialGradient>
+    <linearGradient id="pillarG" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#140e06"/><stop offset=".35" stop-color="#33260f"/><stop offset=".7" stop-color="#241a0b"/><stop offset="1" stop-color="#0e0a04"/>
+    </linearGradient>
+    <pattern id="fretP" width="48" height="48" patternUnits="userSpaceOnUse">
+      <rect width="48" height="48" fill="#1c150a"/>
+      <path d="M6 44V6H38V32H18V18H28" fill="none" stroke="#c9a227" stroke-width="4"/>
+      <path d="M26 44H44V38" fill="none" stroke="#8c6d16" stroke-width="4"/>
+    </pattern>
+    <pattern id="fretS" width="48" height="48" patternUnits="userSpaceOnUse" patternTransform="scale(.42)">
+      <rect width="48" height="48" fill="#1c150a"/>
+      <path d="M6 44V6H38V32H18V18H28" fill="none" stroke="#c9a227" stroke-width="5"/>
+    </pattern>
+    <pattern id="fretV" width="48" height="48" patternUnits="userSpaceOnUse" patternTransform="rotate(90) scale(.75)">
+      <rect width="48" height="48" fill="#1c150a"/>
+      <path d="M6 44V6H38V32H18V18H28" fill="none" stroke="#c9a227" stroke-width="4"/>
+    </pattern>
+    <pattern id="mosaicP" width="10" height="10" patternUnits="userSpaceOnUse">
+      <rect width="5" height="5" fill="#2f8f7a"/><rect x="5" width="5" height="5" fill="#25705f"/>
+      <rect y="5" width="5" height="5" fill="#46b39a"/><rect x="5" y="5" width="5" height="5" fill="#3aa38c"/>
+      <path d="M0 0H10M0 5H10M0 0V10M5 0V10" stroke="#0e2a24" stroke-width=".6"/>
+    </pattern>
+
+    <!-- night / tree -->
+    <linearGradient id="waterG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a2531"/><stop offset="1" stop-color="#03060a"/></linearGradient>
+    <radialGradient id="fogG"><stop offset="0" stop-color="#b4c3d1" stop-opacity=".15"/><stop offset="1" stop-color="#b4c3d1" stop-opacity="0"/></radialGradient>
+    <radialGradient id="moonG"><stop offset="0" stop-color="#e8dcb8" stop-opacity=".34"/><stop offset=".35" stop-color="#a99f88" stop-opacity=".1"/><stop offset="1" stop-color="#a99f88" stop-opacity="0"/></radialGradient>
+    <radialGradient id="moonDisk" cx=".42" cy=".4"><stop offset="0" stop-color="#f3ead2"/><stop offset="1" stop-color="#a8a08a"/></radialGradient>
+    <linearGradient id="groundG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#25272c"/><stop offset=".25" stop-color="#121316"/><stop offset="1" stop-color="#030304"/></linearGradient>
+    <linearGradient id="shadowG" gradientUnits="userSpaceOnUse" x1="800" y1="656" x2="200" y2="905"><stop offset="0" stop-color="#000" stop-opacity=".95"/><stop offset="1" stop-color="#000" stop-opacity="0"/></linearGradient>
+
+    <!-- filters -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="sunF" x="-30%" y="-30%" width="160%" height="160%">
+      <feColorMatrix id="sunSat" type="saturate" values="1" result="s"/>
+      <feGaussianBlur id="sunBlur" in="s" stdDeviation="10" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="s"/></feMerge>
+    </filter>
+    <filter id="roomF"><feColorMatrix id="roomSat" type="saturate" values="1"/></filter>
+    <filter id="nightBlur" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur id="nbBlur" stdDeviation="0"/></filter>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="5"/></filter>
+  </defs>
+
+  <g id="cam">
+    <!-- SCENE 0 : the night sky over the Valley of Mexico -->
+    <g id="s0">
+      <rect x="-200" y="-200" width="2000" height="1100" fill="url(#nightSkyG)"/>
+      <ellipse cx="700" cy="250" rx="950" ry="95" fill="url(#milkyG)" transform="rotate(-16 700 250)"/>
+      <g id="stars"></g>
+      <circle cx="1250" cy="170" r="170" fill="url(#skyMoonG)"/>
+      <circle cx="1250" cy="170" r="46" fill="#f1e6c4" mask="url(#crescentM)"/>
+      <path id="meteor" d="M0 0 L120 40" stroke="#eef2fa" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="40 220" stroke-dashoffset="40" opacity="0"/>
+      <g id="cloudsBack"></g>
+      <g id="eagle"><g id="eagleWings"></g></g>
+      <g id="ranges"></g>
+      <g id="cloudsMid"></g>
+      <g id="cloudsFront"><g id="cloudsFrontDrift"></g></g>
+    </g>
+
+    <!-- SCENE 1 : Tenochtitlan -->
+    <g id="s1" opacity="0"><g id="s1z"><g id="s1b">
+      <rect x="-300" y="-6" width="2200" height="1250" fill="url(#landG)"/>
+      <g id="terrain"></g>
+      <path id="lake" fill="url(#lakeG)" stroke="#3b3926" stroke-width="7"/>
+      <path id="foam" fill="none" stroke="#8fbab0" stroke-opacity=".22" stroke-width="1.5"/>
+      <g clip-path="url(#lakeClip)">
+        <g id="ripples"></g>
+        <g id="waves"></g>
+        <g id="reeds"></g>
+        <path id="dike" d="M1035 75 Q1075 300 1060 470 Q1045 680 1010 830" fill="none" stroke="#3d3626" stroke-width="5"/>
+        <path d="M1035 75 Q1075 300 1060 470 Q1045 680 1010 830" fill="none" stroke="#8a7a52" stroke-width="8" stroke-dasharray="1.6 9"/>
+        <g id="lakeCanoes"></g>
+      </g>
+      <path id="aqueduct" d="M70 575 Q340 540 612 472" fill="none" stroke="#6d6248" stroke-width="5"/>
+      <path d="M70 575 Q340 540 612 472" fill="none" stroke="#4f8fae" stroke-width="1.6" stroke-opacity=".8"/>
+      <g id="causeways"></g>
+      <g id="islands">
+        <path id="island" fill="#0f2a29" stroke="#c9a227" stroke-opacity=".55" stroke-width="1.6"/>
+        <g id="chin" clip-path="url(#islandClip)"></g>
+        <g id="canals" clip-path="url(#islandClip)" stroke="#0f2a29" stroke-width="4"></g>
+      </g>
+      <circle id="preGlow" cx="800" cy="452" r="140" fill="url(#goldGlow)" opacity=".3"/>
+      <g id="precinct"></g>
+      <rect id="quarters" x="670" y="419" width="52" height="52" fill="rgba(193,18,31,.18)" stroke="#c1121f" stroke-width="2"/>
+      <path id="runner" d="M676 445 L612 455 L330 445 L30 420" fill="none" stroke="#c1121f" stroke-width="4" stroke-linecap="round" filter="url(#glow)" opacity=".9" stroke-dasharray="0 9999"/>
+      <g id="mountains"></g>
+      <g id="landTrees"></g>
+      <g id="cloudShadows"></g>
+      <g id="egrets"></g>
+    </g></g></g>
+
+    <!-- SCENE 2 : the treasury -->
+    <g id="s2" opacity="0"><g id="s2z">
+      <g id="roomBack" filter="url(#roomF)"></g>
+      <circle id="halo" cx="800" cy="450" r="560" fill="url(#goldGlow)" opacity=".6"/>
+      <g id="sunAll">
+        <g id="sun" filter="url(#sunF)">
+          <g id="sunOuter"></g>
+          <g id="sunOllin"></g>
+          <g id="sunFace"></g>
+        </g>
+      </g>
+      <g id="roomFront" filter="url(#roomF)"></g>
+    </g></g>
+
+    <!-- SCENES 3 + 4 : the causeway at night -->
+    <g id="night" opacity="0">
+      <g id="s3a">
+        <path id="bolt" d="M0 0" fill="none" stroke="#e8eef5" stroke-width="2.2" opacity="0" filter="url(#glow)"/>
+        <g id="city"></g>
+        <rect id="water" x="-200" y="470" width="2000" height="600" fill="url(#waterG)"/>
+        <line x1="-200" y1="470" x2="1800" y2="470" stroke="#a0b4c8" stroke-opacity=".18"/>
+        <g id="shimmer"></g>
+      </g>
+      <g class="s4" id="s4back" opacity="0">
+        <rect id="redWater" x="-200" y="471" width="2000" height="600" fill="#5c0a0e" opacity="0"/>
+      </g>
+      <g id="s3b">
+        <g id="causeway"></g>
+        <g id="bridge"></g>
+        <g id="march"></g>
+      </g>
+      <g class="s4" id="s4front" opacity="0">
+        <g id="canoesFront"></g>
+        <g id="sinks"></g>
+        <g id="volley"></g>
+      </g>
+      <g id="fogs"></g>
+    </g>
+
+    <!-- SCENE 5 : El Árbol de la Noche Triste -->
+    <g id="s5" opacity="0">
+      <circle id="moonHalo" cx="930" cy="280" r="430" fill="url(#moonG)"/>
+      <circle id="moon" cx="930" cy="280" r="100" fill="url(#moonDisk)" opacity=".85"/>
+      <rect id="ground" x="-200" y="652" width="2000" height="400" fill="url(#groundG)"/>
+      <line x1="-200" y1="652" x2="1800" y2="652" stroke="#d9cfb2" stroke-opacity=".12"/>
+      <path id="shadow" d="M735 656 L872 656 L380 905 L10 905 Z" fill="url(#shadowG)" filter="url(#soft)"/>
+      <g id="crown"></g>
+      <g fill="none" stroke="#08080a" stroke-linecap="round">
+        <path d="M712 652 Q660 650 610 660" stroke-width="10"/>
+        <path d="M890 652 Q950 648 1010 662" stroke-width="10"/>
+        <path d="M760 654 Q730 664 690 672" stroke-width="7"/>
+        <path d="M850 654 Q880 664 925 674" stroke-width="7"/>
+      </g>
+      <path id="trunk" d="M688 654 C730 646 758 612 764 560 C769 515 774 480 758 420 C776 432 790 425 800 405 C810 425 826 430 844 418 C828 478 830 515 836 560 C842 612 870 646 912 654 Z" fill="#08080a"/>
+      <g fill="none" stroke="#17171b" stroke-width="2" stroke-linecap="round">
+        <path d="M782 640 Q786 560 781 470"/><path d="M812 645 Q808 560 815 465"/><path d="M748 646 Q770 600 772 540"/><path d="M856 646 Q834 600 828 540"/>
+      </g>
+      <path id="rim" d="M844 418 C828 478 830 515 836 560 C842 612 870 646 912 654" fill="none" stroke="#e6d6a8" stroke-width="2.2" opacity=".45"/>
+      <g id="lostGold" opacity=".55">
+        <path d="M968 676 L1004 676 L998 664 L974 664 Z" fill="url(#barG)" stroke="#6b4e10"/>
+      </g>
+    </g>
+  </g>
+</svg>
+
+<canvas id="fx"></canvas>
+<div id="flash"></div>
+<div id="vignette"></div>
+<div id="grain"></div>
+<div id="title">
+  <div class="t-name" id="tName">La Noche Triste</div>
+</div>
+<div id="black"></div>
+
+<div id="credit">
+  <div class="cr-by">Created by</div>
+  <div class="cr-name" id="crName">Matthew Bradbury</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+(() => {
+  const NS = 'http://www.w3.org/2000/svg';
+  const $ = s => document.querySelector(s);
+  const $$ = s => [...document.querySelectorAll(s)];
+  const R = (a, b) => a + Math.random() * (b - a);
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const f1 = n => n.toFixed(1);
+  const world = $('#world');
+  function el(tag, attrs, parent) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+
+  /* ============================================================
+     BUILD (runs once; the SVG is then snapshotted for clean resets)
+     ============================================================ */
+
+  // ---------- Scene 0 : sky ----------
+  function cloud(parent, x, y, w, body, rim, shade) {
+    const g = el('g', {}, parent);
+    const n = Math.round(w / 45) + 3, h = w * .17;
+    const puffs = [];
+    for (let i = 0; i < n; i++) {
+      const t = (i + .5) / n;
+      const cx = x - w / 2 + t * w + R(-8, 8);
+      const r = h * (.45 + Math.sin(t * Math.PI) * R(.55, .85));
+      puffs.push([cx, y - r * .45, r]);
+    }
+    puffs.forEach(([cx, cy, r]) => el('circle', { cx: f1(cx - 2), cy: f1(cy - 4), r: f1(r), fill: rim }, g));
+    puffs.forEach(([cx, cy, r]) => el('circle', { cx: f1(cx), cy: f1(cy), r: f1(r), fill: body }, g));
+    el('ellipse', { cx: x, cy: y + h * .15, rx: w * .52, ry: h * .45, fill: shade }, g);
+    el('rect', { x: x - w * .5, y: y - 2, width: w, height: h * .25, fill: body }, g);
+  }
+  function buildSky() {
+    const st = $('#stars');
+    for (let i = 0; i < 280; i++) {
+      const big = Math.random() > .86;
+      el('circle', { class: Math.random() < .35 ? 'tw' : '', cx: f1(R(-100, 1700)), cy: f1(R(-40, 620)), r: f1(big ? R(1.3, 2.1) : R(.4, 1.2)), fill: pick(['#e8ecf5', '#f5ecd2', '#d8e2f5']), opacity: f1(R(.35, 1)) }, st);
+    }
+    for (let i = 0; i < 16; i++) {
+      const x = R(0, 1600), y = R(0, 520), s = R(4, 9);
+      el('path', { class: 'tw2', d: `M${f1(x)} ${f1(y - s)} L${f1(x + s * .2)} ${f1(y - s * .2)} L${f1(x + s)} ${f1(y)} L${f1(x + s * .2)} ${f1(y + s * .2)} L${f1(x)} ${f1(y + s)} L${f1(x - s * .2)} ${f1(y + s * .2)} L${f1(x - s)} ${f1(y)} L${f1(x - s * .2)} ${f1(y - s * .2)}Z`, fill: '#f5f0dc' }, st);
+    }
+    const cb = $('#cloudsBack'), cm = $('#cloudsMid'), cf = $('#cloudsFrontDrift');
+    for (let i = 0; i < 7; i++) cloud(cb, R(-100, 1700), R(150, 380), R(170, 290), '#122036', '#2c3e5a', '#0d182a');
+    for (let i = 0; i < 5; i++) cloud(cm, R(-100, 1700), R(420, 560), R(280, 440), '#16253c', '#36507a', '#0f1b2d');
+    for (let i = 0; i < 5; i++) cloud(cf, -150 + i * 420 + R(-60, 60), R(930, 980), R(460, 640), '#1a2a42', '#3f5a84', '#111e32');
+
+    // eagle
+    const ew = $('#eagleWings'), eg = $('#eagle');
+    const wing = 'M0 0 C-18 -10 -40 -14 -66 -6 C-54 -3 -46 0 -38 2 C-46 3 -52 7 -58 11 C-38 7 -20 7 -6 4 Z';
+    el('path', { d: wing, fill: '#05080d' }, ew);
+    el('path', { d: wing, fill: '#05080d', transform: 'scale(-1 1)' }, ew);
+    el('path', { d: 'M-5 -3 Q0 -10 5 -3 L4 10 L9 20 L0 16 L-9 20 L-4 10 Z', fill: '#05080d' }, eg);
+
+    // the volcanoes and the valley
+    const rg = $('#ranges');
+    el('path', { d: 'M200 840 L330 690 Q380 640 430 660 L520 625 Q560 610 600 630 L680 650 Q730 640 760 668 L920 840 Z', fill: '#1b2636' }, rg);
+    el('path', { d: 'M335 684 Q380 640 430 660 L520 625 Q560 610 600 630 L680 650 Q730 640 755 666 L735 671 Q700 662 680 670 L600 650 Q560 634 520 646 L430 680 Q386 662 346 692 Z', fill: '#b9c5d3', opacity: .7 }, rg);
+    el('path', { d: 'M880 840 L1120 574 Q1150 556 1180 574 L1430 840 Z', fill: '#1d2939' }, rg);
+    el('path', { d: 'M1080 618 L1120 574 Q1150 556 1180 574 L1222 620 L1203 612 L1186 630 L1166 608 L1146 632 L1126 610 L1104 628 Z', fill: '#c5d0dc', opacity: .78 }, rg);
+    el('path', { d: 'M1150 560 L1100 840 M1150 560 L1210 840 M1150 560 L1290 840', stroke: '#2a3a50', 'stroke-width': 1.5, fill: 'none', opacity: .6 }, rg);
+    el('path', { d: 'M430 662 L380 840 M520 628 L520 840 M600 632 L650 840', stroke: '#2a3a50', 'stroke-width': 1.5, fill: 'none', opacity: .6 }, rg);
+    for (let i = 0; i < 7; i++) el('circle', { class: 'puff', cx: 1150, cy: 552, r: 16, fill: '#2c3646', opacity: 0 }, rg);
+    // the valley lake with Tenochtitlan as a speck of fire
+    el('rect', { x: 200, y: 826, width: 1200, height: 40, fill: 'url(#valleyLakeG)' }, rg);
+    for (let i = 0; i < 16; i++) { const x = R(380, 1150), y = R(830, 856); el('line', { class: 'shim0', x1: f1(x), y1: f1(y), x2: f1(x + R(20, 70)), y2: f1(y), stroke: '#9fc0da', 'stroke-opacity': .35 }, rg); }
+    el('path', { d: 'M780 831 L788 818 L812 818 L820 831Z M796 818 V812 H801 V818 M804 818 V812 H809 V818', fill: '#0d141c', stroke: '#0d141c' }, rg);
+    el('line', { x1: 560, y1: 832, x2: 1060, y2: 830, stroke: '#0d141c', 'stroke-width': 1.5 }, rg);
+    el('circle', { class: 'fire0', cx: 798, cy: 810, r: 2, fill: '#ff6a2a', filter: 'url(#glow)' }, rg);
+    el('circle', { class: 'fire0', cx: 807, cy: 810, r: 2, fill: '#ff6a2a', filter: 'url(#glow)' }, rg);
+    // near hills with tree lines
+    const hills = [
+      'M-200 920 L-200 800 Q100 760 300 800 Q450 828 580 862 L580 920 Z',
+      'M1020 920 L1020 864 Q1150 822 1300 796 Q1500 764 1800 800 L1800 920 Z'
+    ];
+    const tops = ['M-200 800 Q100 760 300 800 Q450 828 580 862', 'M1020 864 Q1150 822 1300 796 Q1500 764 1800 800'];
+    hills.forEach((d, i) => {
+      el('path', { d, fill: '#0e131a' }, rg);
+      const top = el('path', { d: tops[i], fill: 'none' }, rg);
+      const L = top.getTotalLength();
+      for (let s = 0; s < L; s += R(9, 16)) {
+        const p = top.getPointAtLength(s), x = p.x, y = p.y + 2;
+        if (Math.random() < .55) {
+          const h = R(18, 34);
+          el('path', { d: `M${f1(x)} ${f1(y)} L${f1(x - 4)} ${f1(y - 4)} Q${f1(x - 6)} ${f1(y - h * .7)} ${f1(x)} ${f1(y - h)} Q${f1(x + 6)} ${f1(y - h * .7)} ${f1(x + 4)} ${f1(y - 4)} Z`, fill: '#080b10' }, rg);
+        } else {
+          const r = R(6, 11);
+          el('circle', { cx: f1(x), cy: f1(y - r * 1.1), r: f1(r), fill: '#080b10' }, rg);
+        }
+      }
+      top.remove();
+    });
+    el('rect', { x: -200, y: 858, width: 2000, height: 80, fill: '#0b0b09' }, rg);
+  }
+
+  // ---------- Scene 1 : Tenochtitlan ----------
+  const blobR = (a, sd) => 1 + .07 * Math.sin(3 * a + sd) + .04 * Math.sin(7 * a + 2 * sd) + .025 * Math.sin(13 * a);
+  function blob(cx, cy, rx, ry, sd) {
+    let d = '';
+    for (let i = 0; i <= 90; i++) {
+      const a = i / 90 * Math.PI * 2, r = blobR(a, sd);
+      d += (i ? 'L' : 'M') + f1(cx + Math.cos(a) * rx * r) + ' ' + f1(cy + Math.sin(a) * ry * r);
+    }
+    return d + 'Z';
+  }
+  const blobN = (x, y, [cx, cy, rx, ry, sd]) => {
+    const dx = (x - cx) / rx, dy = (y - cy) / ry;
+    return Math.hypot(dx, dy) / blobR(Math.atan2(dy, dx), sd);
+  };
+  const LAKE = [800, 450, 700, 390, 1.3];
+  const ISL = [[800, 455, 195, 150, .5], [782, 292, 92, 70, 2.1]];
+  const lakeN = (x, y) => blobN(x, y, LAKE);
+  const islN = (x, y) => Math.min(...ISL.map(b => blobN(x, y, b)));
+
+  function tree(parent, x, y, r) {
+    el('circle', { cx: f1(x + r * .35), cy: f1(y + r * .35), r: f1(r), fill: '#050504', opacity: .55 }, parent);
+    el('circle', { cx: f1(x), cy: f1(y), r: f1(r), fill: pick(['#1d3326', '#22402c', '#2a4a31', '#1f3a24']), stroke: '#0e1a12', 'stroke-width': .8 }, parent);
+    el('circle', { cx: f1(x - r * .3), cy: f1(y - r * .3), r: f1(r * .45), fill: '#4d7d52', opacity: .55 }, parent);
+  }
+  function hill(parent, x, y, w, h, snow) {
+    const g = el('g', {}, parent);
+    el('path', { d: `M${f1(x - w)} ${f1(y)} Q${f1(x - w * .85)} ${f1(y - h)} ${f1(x)} ${f1(y - h)} Q${f1(x + w * .85)} ${f1(y - h)} ${f1(x + w)} ${f1(y)} Z`, fill: '#23211a', stroke: '#7a6528', 'stroke-opacity': .75, 'stroke-width': 1.3 }, g);
+    el('path', { d: `M${f1(x)} ${f1(y - h)} Q${f1(x + w * .85)} ${f1(y - h)} ${f1(x + w)} ${f1(y)} L${f1(x + w * .15)} ${f1(y)} Q${f1(x + w * .2)} ${f1(y - h * .5)} ${f1(x)} ${f1(y - h)} Z`, fill: '#000', opacity: .3 }, g);
+    el('path', { d: `M${f1(x - w * .55)} ${f1(y - h * .32)} q${f1(w * .15)} ${f1(-h * .14)} ${f1(w * .3)} 0 M${f1(x + w * .05)} ${f1(y - h * .58)} q${f1(w * .15)} ${f1(-h * .14)} ${f1(w * .3)} 0 M${f1(x - w * .25)} ${f1(y - h * .12)} q${f1(w * .12)} ${f1(-h * .1)} ${f1(w * .24)} 0`, stroke: '#7a6528', 'stroke-opacity': .55, fill: 'none' }, g);
+    if (snow) el('path', { d: `M${f1(x - w * .36)} ${f1(y - h * .78)} Q${f1(x)} ${f1(y - h * 1.1)} ${f1(x + w * .36)} ${f1(y - h * .78)} L${f1(x + w * .18)} ${f1(y - h * .7)} L${f1(x)} ${f1(y - h * .8)} L${f1(x - w * .16)} ${f1(y - h * .68)} Z`, fill: '#d2d8dc', opacity: .8 }, g);
+    return g;
+  }
+  function buildCity() {
+    const lakeD = blob(...LAKE);
+    $('#lake').setAttribute('d', lakeD);
+    $('#lakeClipPath').setAttribute('d', lakeD);
+    const foam = $('#foam'); foam.setAttribute('d', lakeD); foam.setAttribute('transform', 'translate(800 450) scale(.982) translate(-800 -450)');
+    const isD = ISL.map(b => blob(...b)).join('');
+    $('#island').setAttribute('d', isD);
+    $('#islandClipPath').setAttribute('d', isD);
+
+    // terrain stippling
+    const ter = $('#terrain');
+    for (let i = 0; i < 520; i++) {
+      const x = R(-40, 1640), y = R(-30, 930);
+      if (lakeN(x, y) < 1.03) continue;
+      if (Math.random() < .6) el('path', { d: `M${f1(x)} ${f1(y)} l${f1(R(4, 10))} 0`, stroke: '#7a6528', 'stroke-opacity': f1(R(.12, .35)), 'stroke-width': 1 }, ter);
+      else el('circle', { cx: f1(x), cy: f1(y), r: 1, fill: '#7a6528', opacity: f1(R(.15, .4)) }, ter);
+    }
+    // ripples, waves, reeds, canoes on the lake
+    const rip = $('#ripples');
+    for (let i = 0; i < 7; i++) {
+      const rx = 260 + i * 62;
+      el('ellipse', { class: 'rip', cx: 800, cy: 450, rx, ry: rx * .56, fill: 'none', stroke: '#3f7a6a', 'stroke-opacity': .28, 'stroke-width': 1, 'stroke-dasharray': '3 16' }, rip);
+    }
+    const wv = $('#waves');
+    const wA = el('g', { id: 'wavesA' }, wv), wB = el('g', { id: 'wavesB' }, wv);
+    for (let i = 0; i < 400 && wA.childNodes.length + wB.childNodes.length < 190; i++) {
+      const x = R(100, 1500), y = R(60, 840);
+      if (lakeN(x, y) > .92 || islN(x, y) < 1.15) continue;
+      el('path', { d: `M${f1(x)} ${f1(y)} q3 -3 6 0 t6 0`, stroke: '#5f9e8c', 'stroke-opacity': f1(R(.25, .55)), fill: 'none', 'stroke-width': 1 }, i % 2 ? wA : wB);
+    }
+    const rd = $('#reeds');
+    for (let i = 0; i < 110; i++) {
+      const a = R(0, Math.PI * 2), s = R(.93, .995) * blobR(a, LAKE[4]);
+      const x = 800 + Math.cos(a) * 700 * s, y = 450 + Math.sin(a) * 390 * s;
+      const g = el('g', { stroke: pick(['#55703c', '#4a6334', '#6b7e3e']), 'stroke-width': 1.1, 'stroke-linecap': 'round' }, rd);
+      for (let k = 0; k < 6; k++) { const an = R(-Math.PI, 0), l = R(5, 10); el('path', { d: `M${f1(x)} ${f1(y)} l${f1(Math.cos(an) * l)} ${f1(Math.sin(an) * l)}` }, g); }
+      if (Math.random() < .3) el('circle', { cx: f1(x + R(-14, 14)), cy: f1(y + R(-10, 10)), r: f1(R(2, 3.4)), fill: '#2f5d3a', stroke: 'none' }, g);
+    }
+    const lc = $('#lakeCanoes');
+    let placed = 0;
+    for (let i = 0; i < 200 && placed < 24; i++) {
+      const x = R(130, 1470), y = R(80, 820);
+      if (lakeN(x, y) > .85 || islN(x, y) < 1.2) continue;
+      placed++;
+      const o = el('g', { transform: `translate(${f1(x)} ${f1(y)}) rotate(${f1(R(0, 360))})` }, lc);
+      const g = el('g', { class: 'lc' }, o);
+      el('path', { d: 'M-9 0 L-22 -5 M-9 0 L-22 5', stroke: '#9fc7bd', 'stroke-opacity': .35, 'stroke-width': 1 }, g);
+      el('path', { d: 'M-9 0 Q0 -3.5 9 0 Q0 3.5 -9 0Z', fill: '#3a2814', stroke: '#120c05', 'stroke-width': .7 }, g);
+      el('circle', { cx: 1, cy: 0, r: 1.5, fill: '#0b0b0b' }, g);
+      if (Math.random() < .5) el('rect', { x: -5, y: -1.3, width: 3, height: 2.6, fill: '#c9a227' }, g);
+    }
+
+    // causeways (with removable bridges)
+    const cw = $('#causeways');
+    const roads = ['M612 455 L330 445 L30 420', 'M788 224 L800 120 L815 10', 'M805 602 L800 760 L780 895', 'M800 760 L640 875'];
+    roads.forEach(d => el('path', { class: 'cw', d, fill: 'none', stroke: '#f2c94c', 'stroke-opacity': .12, 'stroke-width': 20, 'stroke-linecap': 'round' }, cw));
+    roads.forEach(d => el('path', { class: 'cw', d, fill: 'none', stroke: '#2a2418', 'stroke-width': 11, 'stroke-linecap': 'round' }, cw));
+    roads.forEach((d, i) => el('path', { class: 'cw', d, fill: 'none', stroke: i === 0 ? '#a8925a' : '#8a7a52', 'stroke-width': 6.5, 'stroke-linecap': 'round' }, cw));
+    roads.forEach(d => el('path', { class: 'cwd', d, fill: 'none', stroke: '#e0c46a', 'stroke-opacity': .55, 'stroke-width': 1, 'stroke-dasharray': '4 6' }, cw));
+    [[540, 452.4, 0], [430, 448.5, 0], [250, 438.3, 0], [796, 160, 90], [806, 70, 90], [803, 680, 90], [790, 830, 90]].forEach(([x, y, r]) => {
+      const g = el('g', { class: 'cwd', transform: `translate(${x} ${y}) rotate(${r - 2})` }, cw);
+      el('rect', { x: -5, y: -8, width: 10, height: 16, fill: '#10302f' }, g);
+      for (let k = -4; k <= 4; k += 2.6) el('line', { x1: k, y1: -6, x2: k, y2: 6, stroke: '#6a4a26', 'stroke-width': 1.6 }, g);
+    });
+
+    // houses and chinampas
+    const chin = $('#chin');
+    const skip = (x, y) =>
+      (x > 716 && x < 884 && y > 368 && y < 536) || (x > 664 && x < 728 && y > 413 && y < 477) ||
+      (x > 842 && x < 912 && y > 532 && y < 592) || (x > 752 && x < 834 && y > 240 && y < 312);
+    for (let x = 586; x < 1010; x += 18) {
+      for (let y = 198; y < 640; y += 12) {
+        const cx = x + 7, cy = y + 4;
+        if (islN(cx, cy) > .97 || skip(cx, cy)) continue;
+        const d = Math.hypot(cx - 800, (cy - 450) * 1.15), dT = Math.hypot(cx - 790, (cy - 285) * 1.15);
+        const g = el('g', { class: 'ch', 'data-d': Math.min(d, dT + 40).toFixed(0) }, chin);
+        if (d < 150 || dT < 60) {
+          el('rect', { x, y, width: 14, height: 8, fill: pick(['#a89a76', '#b5a682', '#9c8f6c', '#8f8262']), stroke: '#3e3626', 'stroke-width': .5 }, g);
+          el('rect', { x: x + 5, y: y + 2.5, width: 4.5, height: 3, fill: '#3e3626' }, g);
+          if (Math.random() < .15) el('circle', { cx: x + 3, cy: y + 4, r: 1.6, fill: '#3f6b45' }, g);
+        } else {
+          el('rect', { x, y, width: 14, height: 8, fill: pick(['url(#cropA)', 'url(#cropB)', 'url(#cropC)', 'url(#cropB)']), stroke: '#c9a227', 'stroke-opacity': f1(R(.12, .3)), 'stroke-width': .5 }, g);
+          if (Math.random() < .35) el('circle', { cx: f1(x + (Math.random() < .5 ? 0 : 14)), cy: f1(y + R(0, 8)), r: f1(R(1.5, 2.4)), fill: pick(['#3f6b45', '#4d7d52']) }, g);
+        }
+      }
+    }
+    const canals = $('#canals');
+    [[560, 452, 718, 452], [882, 452, 1040, 452], [800, 190, 800, 368], [800, 536, 800, 700], [560, 360, 716, 360], [884, 360, 1040, 360], [560, 548, 1040, 548], [690, 190, 690, 700], [930, 190, 930, 700]].forEach(([x1, y1, x2, y2]) => el('line', { x1, y1, x2, y2 }, canals));
+
+    // ceremonial precinct
+    const P = $('#precinct');
+    el('rect', { x: 722, y: 374, width: 156, height: 156, fill: 'url(#pavP)', stroke: '#c9a227', 'stroke-width': 2.4 }, P);
+    for (let t = 0; t < 4; t++) for (let s = 4; s < 156; s += 8) {
+      const [x, y] = [[722 + s, 374], [878, 374 + s], [878 - s, 530], [722, 530 - s]][t];
+      el('circle', { cx: x, cy: y, r: 1.3, fill: '#f2c94c' }, P);
+    }
+    // Templo Mayor (west-facing, twin shrines)
+    [[774, 426, 52, '#6d6248'], [779, 431, 42, '#857857'], [784, 436, 32, '#6d6248'], [788, 440, 24, '#a3946c']].forEach(([x, y, s, f]) => el('rect', { x, y, width: s, height: s, fill: f, stroke: '#2a2418', 'stroke-width': .8 }, P));
+    el('rect', { x: 772, y: 439, width: 16, height: 10, fill: 'url(#stairP)', stroke: '#2a2418', 'stroke-width': .5 }, P);
+    el('rect', { x: 772, y: 455, width: 16, height: 10, fill: 'url(#stairP)', stroke: '#2a2418', 'stroke-width': .5 }, P);
+    el('rect', { x: 793, y: 441, width: 11, height: 10, fill: '#2f6f8f', stroke: '#0f1a20', 'stroke-width': .6 }, P);
+    el('rect', { x: 793, y: 453, width: 11, height: 10, fill: '#8a0f14', stroke: '#2a0507', 'stroke-width': .6 }, P);
+    el('path', { d: 'M795 446 h7 M795 458 h7', stroke: '#e8dcc0', 'stroke-width': .6, opacity: .6 }, P);
+    // round temple of Quetzalcoatl
+    el('circle', { cx: 750, cy: 452, r: 11, fill: '#857857', stroke: '#c9a227', 'stroke-width': .8 }, P);
+    el('circle', { cx: 750, cy: 452, r: 5.5, fill: '#a3946c' }, P);
+    el('rect', { x: 733, y: 449, width: 7, height: 6, fill: 'url(#stairP)' }, P);
+    // tzompantli
+    el('rect', { x: 735, y: 384, width: 42, height: 7, fill: '#2b241a', stroke: '#c9a227', 'stroke-width': .6 }, P);
+    for (let k = 0; k < 14; k++) el('circle', { cx: 738 + k * 2.8, cy: 387.5, r: 1, fill: '#e9e1cf' }, P);
+    // ball court
+    el('path', { d: 'M836 498 h36 v6 h-11 v12 h11 v6 h-36 v-6 h11 v-12 h-11 Z', fill: '#857857', stroke: '#c9a227', 'stroke-width': .6 }, P);
+    el('line', { x1: 854, y1: 506, x2: 854, y2: 514, stroke: '#2a2418', 'stroke-width': 2 }, P);
+    // smaller temples and halls
+    [[842, 384, 22], [848, 440, 16], [734, 500, 18], [806, 500, 16]].forEach(([x, y, s]) => {
+      el('rect', { x, y, width: s, height: s, fill: '#6d6248', stroke: '#2a2418', 'stroke-width': .6 }, P);
+      el('rect', { x: x + s * .25, y: y + s * .25, width: s * .5, height: s * .5, fill: '#a3946c' }, P);
+    });
+    el('rect', { x: 800, y: 380, width: 30, height: 14, fill: '#857857', stroke: '#2a2418', 'stroke-width': .6 }, P);
+    [[732, 410], [866, 480], [760, 516], [866, 420]].forEach(([x, y]) => tree(P, x, y, 3.2));
+    // palace of Axayacatl (the Spaniards' quarters)
+    el('rect', { x: 676, y: 425, width: 40, height: 40, fill: '#857857', stroke: '#2a2418', 'stroke-width': .8 }, P);
+    el('rect', { x: 686, y: 435, width: 20, height: 20, fill: '#3e3626' }, P);
+    tree(P, 696, 445, 3.5);
+    // palace of Moctezuma
+    el('rect', { x: 848, y: 538, width: 60, height: 50, fill: '#857857', stroke: '#2a2418', 'stroke-width': .8 }, P);
+    el('rect', { x: 854, y: 544, width: 18, height: 14, fill: '#3e3626' }, P);
+    el('rect', { x: 878, y: 544, width: 24, height: 14, fill: '#3e3626' }, P);
+    el('rect', { x: 854, y: 564, width: 48, height: 18, fill: '#2c4a2a' }, P);
+    for (let k = 0; k < 5; k++) tree(P, 858 + k * 10, 573, 3);
+    // Tlatelolco market and temple
+    el('rect', { x: 756, y: 270, width: 54, height: 36, fill: '#8a7f63', stroke: '#c9a227', 'stroke-width': .7 }, P);
+    for (let i = 0; i < 8; i++) for (let j = 0; j < 4; j++) el('rect', { x: 760 + i * 6.2, y: 274 + j * 8, width: 3.6, height: 4, fill: pick(['#c1121f', '#c9a227', '#2f5d50', '#e8dcc0', '#6a4a26']) }, P);
+    [[814, 262, 24, '#6d6248'], [818, 266, 16, '#857857'], [821, 269, 10, '#a3946c']].forEach(([x, y, s, f]) => el('rect', { x, y, width: s, height: s, fill: f, stroke: '#2a2418', 'stroke-width': .6 }, P));
+
+    // mountains, volcanoes and forests on the shore
+    const mt = $('#mountains'), lt = $('#landTrees');
+    const peaks = [];
+    for (let i = 0; i < 600 && peaks.length < 46; i++) {
+      const x = R(-30, 1630), y = R(10, 930);
+      if (lakeN(x, y) < 1.13) continue;
+      if (peaks.some(([px, py]) => Math.hypot(px - x, py - y) < 60)) continue;
+      if (Math.hypot(x - 60, y - 575) < 90) continue;
+      peaks.push([x, y]);
+    }
+    peaks.sort((a, b) => a[1] - b[1]).forEach(([x, y]) => hill(mt, x, y, R(24, 42), R(28, 52), false));
+    hill(mt, 1535, 820, 72, 104, true);
+    hill(mt, 1420, 880, 92, 66, true);
+    el('path', { id: 'popoSmoke', d: 'M1535 712 q-10 -20 6 -36 q16 -16 2 -36 q-12 -16 8 -34', stroke: '#8a929c', 'stroke-opacity': .55, 'stroke-width': 3, fill: 'none', 'stroke-linecap': 'round', 'stroke-dasharray': '10 8' }, mt);
+    // Chapultepec hill with its forest and spring
+    hill(mt, 60, 590, 48, 46, false);
+    for (let i = 0; i < 34; i++) { const a = R(0, Math.PI * 2), r = R(30, 95); const x = 60 + Math.cos(a) * r, y = 590 + Math.sin(a) * r * .7; if (lakeN(x, y) > 1.02) tree(lt, x, y, R(5, 8)); }
+    el('circle', { cx: 70, cy: 575, r: 4, fill: '#4f8fae', stroke: '#c9a227', 'stroke-width': .8 }, lt);
+    // shoreline trees and scattered groves
+    for (let i = 0; i < 340; i++) {
+      const a = R(0, Math.PI * 2), s = R(1.03, 1.2) * blobR(a, LAKE[4]);
+      const x = 800 + Math.cos(a) * 700 * s, y = 450 + Math.sin(a) * 390 * s;
+      if (x < -20 || x > 1620 || y < -20 || y > 920) continue;
+      tree(lt, x, y, R(4.5, 8.5));
+    }
+    for (let i = 0; i < 160; i++) {
+      const x = R(-20, 1620), y = R(-20, 920);
+      if (lakeN(x, y) < 1.22) continue;
+      tree(lt, x, y, R(4, 7));
+    }
+
+    // cloud shadows & a flight of egrets
+    const cs = $('#cloudShadows');
+    for (let i = 0; i < 4; i++) el('ellipse', { class: 'cs', cx: 0, cy: R(80, 820), rx: R(260, 380), ry: R(120, 180), fill: 'url(#cloudShadowG)' }, cs);
+    const eg = $('#egrets');
+    [[0, 0], [22, 12], [44, 24], [22, -14], [48, -26], [70, 36]].forEach(([dx, dy]) => {
+      el('path', { d: `M${dx + 40} ${dy + 300} q5 -4 10 0 q5 -4 10 0`, stroke: '#000', 'stroke-opacity': .35, 'stroke-width': 1.6, fill: 'none' }, eg);
+      el('path', { class: 'egret', d: `M${dx} ${dy + 250} q5 -4 10 0 q5 -4 10 0`, stroke: '#ece8dc', 'stroke-width': 1.7, fill: 'none', 'stroke-linecap': 'round' }, eg);
+    });
+  }
+
+  // ---------- Scene 2 : the treasury ----------
+  function feather(g, bx, by, ang, len, w, fill, mid, tip) {
+    const tx = bx + Math.cos(ang) * len, ty = by + Math.sin(ang) * len;
+    const px = -Math.sin(ang) * w, py = Math.cos(ang) * w;
+    const mx = bx + Math.cos(ang) * len * .6, my = by + Math.sin(ang) * len * .6;
+    el('path', { d: `M${f1(bx)} ${f1(by)} Q${f1(mx + px)} ${f1(my + py)} ${f1(tx)} ${f1(ty)} Q${f1(mx - px)} ${f1(my - py)} ${f1(bx)} ${f1(by)}Z`, fill, stroke: '#0a120e', 'stroke-width': .8 }, g);
+    el('path', { d: `M${f1(bx)} ${f1(by)} L${f1(tx)} ${f1(ty)}`, stroke: mid, 'stroke-width': 1, opacity: .75 }, g);
+    if (tip) el('circle', { cx: f1(bx + Math.cos(ang) * len * .8), cy: f1(by + Math.sin(ang) * len * .8), r: f1(w * .5), fill: tip, stroke: '#0a120e', 'stroke-width': .5 }, g);
+  }
+  function sparkle(parent, x, y, s) {
+    el('path', { class: 'spark', d: `M${f1(x)} ${f1(y - s)} L${f1(x + s * .18)} ${f1(y - s * .18)} L${f1(x + s)} ${f1(y)} L${f1(x + s * .18)} ${f1(y + s * .18)} L${f1(x)} ${f1(y + s)} L${f1(x - s * .18)} ${f1(y + s * .18)} L${f1(x - s)} ${f1(y)} L${f1(x - s * .18)} ${f1(y - s * .18)}Z`, fill: '#fff6d0', opacity: 0 }, parent);
+  }
+  function buildRoom() {
+    const B = $('#roomBack'), F = $('#roomFront');
+    // stone wall
+    el('rect', { x: -200, y: -200, width: 2000, height: 1000, fill: '#170f07' }, B);
+    for (let y = -60, row = 0; y < 760; y += 44, row++) {
+      let x = -170 + (row % 2) * 55;
+      while (x < 1770) {
+        const w = R(90, 150);
+        el('rect', { x: f1(x), y, width: f1(w - 3), height: 41, rx: 2, fill: pick(['#251b0e', '#2a1f10', '#211709', '#2e2312', '#271c0d']), stroke: '#0f0a04', 'stroke-width': 1.5 }, B);
+        if (Math.random() < .3) el('path', { d: `M${f1(x + R(10, w - 30))} ${f1(y + R(8, 32))} l${f1(R(6, 16))} ${f1(R(-3, 3))}`, stroke: '#3c2e17', 'stroke-width': 1.2 }, B);
+        if (Math.random() < .15) el('path', { d: `M${f1(x + 2)} ${y + 2} h${f1(w - 7)}`, stroke: '#4a3818', 'stroke-width': 1, opacity: .6 }, B);
+        x += w;
+      }
+    }
+    // light falling from a high opening
+    [['M650 -50 L720 -50 L880 760 L560 760Z', .06], ['M770 -50 L840 -50 L1010 760 L720 760Z', .05], ['M880 -50 L930 -50 L1120 760 L880 760Z', .04]].forEach(([d, o]) => el('path', { class: 'ray', d, fill: '#f2c94c', opacity: o }, B));
+    // frieze with step-fret and studs
+    el('rect', { x: -200, y: 28, width: 2000, height: 56, fill: 'url(#fretP)' }, B);
+    el('rect', { x: -200, y: 20, width: 2000, height: 8, fill: '#c9a227' }, B);
+    el('rect', { x: -200, y: 84, width: 2000, height: 8, fill: '#c9a227' }, B);
+    for (let x = -180; x < 1800; x += 64) {
+      el('circle', { cx: x, cy: 108, r: 7, fill: 'url(#barG)', stroke: '#6b4e10' }, B);
+      el('circle', { cx: x, cy: 108, r: 2.5, fill: '#8a0f14' }, B);
+    }
+    // golden necklaces draped beneath the frieze
+    function drape(x1, x2, y, sag, n) {
+      for (let i = 0; i <= n; i++) {
+        const t = i / n, x = x1 + (x2 - x1) * t, yy = y + sag * 4 * t * (1 - t);
+        el('circle', { cx: f1(x), cy: f1(yy), r: i % 3 === 0 ? 4.2 : 3.2, fill: i % 3 === 0 ? '#2f8f6a' : '#d9ad3a', stroke: '#4a360a', 'stroke-width': .6 }, B);
+      }
+      const mx = (x1 + x2) / 2, my = y + sag;
+      el('path', { d: `M${mx} ${my} L${mx - 7} ${my + 22} L${mx + 7} ${my + 22}Z`, fill: '#c1121f', stroke: '#4a360a' }, B);
+      el('circle', { cx: mx, cy: my + 8, r: 9, fill: 'url(#barG)', stroke: '#6b4e10' }, B);
+    }
+    drape(190, 470, 118, 60, 24); drape(220, 440, 118, 110, 22);
+    drape(1130, 1410, 118, 60, 24); drape(1160, 1380, 118, 110, 22);
+    // pillars
+    [[30, 170], [1430, 1570]].forEach(([a, b]) => {
+      el('rect', { x: a, y: 92, width: b - a, height: 668, fill: 'url(#pillarG)', stroke: '#0a0703', 'stroke-width': 2 }, B);
+      el('rect', { x: a + 38, y: 150, width: b - a - 76, height: 560, fill: 'url(#fretV)', stroke: '#c9a227', 'stroke-width': 2 }, B);
+      el('rect', { x: a - 16, y: 92, width: b - a + 32, height: 34, fill: '#3a2c16', stroke: '#c9a227', 'stroke-width': 1.5 }, B);
+      el('rect', { x: a - 16, y: 728, width: b - a + 32, height: 32, fill: '#3a2c16', stroke: '#c9a227', 'stroke-width': 1.5 }, B);
+      for (let k = 0; k < 4; k++) el('circle', { cx: a + 14 + k * ((b - a - 28) / 3), cy: 109, r: 5, fill: '#c9a227' }, B);
+      // serpent head capital
+      const cx = (a + b) / 2;
+      el('path', { d: `M${cx - 40} 126 Q${cx} 160 ${cx + 40} 126 Z`, fill: '#2a1f0e', stroke: '#c9a227', 'stroke-width': 1.2 }, B);
+      el('circle', { cx: cx - 16, cy: 134, r: 3.5, fill: '#f2c94c' }, B);
+      el('circle', { cx: cx + 16, cy: 134, r: 3.5, fill: '#f2c94c' }, B);
+      el('path', { d: `M${cx - 8} 142 L${cx} 150 L${cx + 8} 142`, stroke: '#c1121f', 'stroke-width': 2, fill: 'none' }, B);
+    });
+    // quetzal-feather headdress
+    const pen = el('g', {}, B), bx = 310, by = 430;
+    for (let k = 0; k < 31; k++) { const a = -Math.PI + .22 + k * (Math.PI - .44) / 30; feather(pen, bx, by, a, R(158, 172), 9, k % 2 ? '#1f6b55' : '#24785e', '#7fd1ad', '#2b5d8f'); }
+    for (let k = 0; k < 23; k++) { const a = -Math.PI + .32 + k * (Math.PI - .64) / 22; feather(pen, bx, by, a, R(100, 112), 8, k % 2 ? '#c1121f' : '#a10f1a', '#f2c94c'); }
+    for (let k = 0; k < 15; k++) { const a = -Math.PI + .45 + k * (Math.PI - .9) / 14; feather(pen, bx, by, a, 66, 7, k % 2 ? '#f2c94c' : '#d4a92c', '#fff1b8'); }
+    el('path', { d: `M${bx - 92} ${by + 4} Q${bx} ${by - 44} ${bx + 92} ${by + 4} L${bx + 86} ${by + 24} Q${bx} ${by - 22} ${bx - 86} ${by + 24} Z`, fill: 'url(#barG)', stroke: '#6b4e10', 'stroke-width': 1.2 }, pen);
+    for (let k = 0; k < 9; k++) { const t = k / 8, x = bx - 80 + t * 160, y = by + 8 - Math.sin(t * Math.PI) * 30; el('circle', { cx: f1(x), cy: f1(y), r: 4, fill: '#2f8f6a', stroke: '#4a360a' }, pen); }
+    // feathered war shield (chimalli)
+    const sh = el('g', {}, B), sx = 1290, sy = 340;
+    for (let k = 0; k < 44; k++) { const a = k / 44 * Math.PI * 2; feather(sh, sx + Math.cos(a) * 92, sy + Math.sin(a) * 92, a, 34, 6, pick(['#c1121f', '#f2c94c', '#1f6b55']), '#fff1b8'); }
+    el('circle', { cx: sx, cy: sy, r: 98, fill: '#2a1f09', stroke: '#c9a227', 'stroke-width': 3 }, sh);
+    el('circle', { cx: sx, cy: sy, r: 86, fill: 'url(#mosaicP)', stroke: '#c9a227', 'stroke-width': 1.5 }, sh);
+    el('path', { d: `M${sx - 58} ${sy + 34} V${sy - 42} H${sx + 42} V${sy + 18} H${sx - 22} V${sy - 10} H${sx + 10}`, stroke: '#f2c94c', 'stroke-width': 10, fill: 'none' }, sh);
+    el('path', { d: `M${sx - 34} ${sy + 64} H${sx - 4} V${sy + 50} H${sx + 26} V${sy + 36} H${sx + 56}`, stroke: '#f2c94c', 'stroke-width': 8, fill: 'none' }, sh);
+    for (let k = 0; k < 5; k++) { const x = sx - 44 + k * 22; el('path', { d: `M${x} ${sy + 120} L${x} ${sy + 160}`, stroke: '#c9a227', 'stroke-width': 1.5 }, sh); feather(sh, x, sy + 158, Math.PI / 2, 30, 5, k % 2 ? '#1f6b55' : '#c1121f', '#f2c94c'); }
+
+    // floor and dais
+    el('rect', { x: -200, y: 758, width: 2000, height: 300, fill: '#130d06' }, F);
+    for (let i = 0; i < 20; i++) { const bxp = -1200 + i * 200; el('line', { x1: 800 + (bxp - 800) * ((758 - 470) / (900 - 470)), y1: 758, x2: bxp, y2: 900, stroke: '#2a1f10', 'stroke-width': 1.5 }, F); }
+    [770, 788, 812, 845, 890].forEach(y => el('line', { x1: -200, y1: y, x2: 1800, y2: y, stroke: '#2a1f10', 'stroke-width': 1.5 }, F));
+    el('rect', { x: 480, y: 752, width: 640, height: 18, fill: '#2e2313', stroke: '#c9a227', 'stroke-width': 1 }, F);
+    el('rect', { x: 440, y: 770, width: 720, height: 24, fill: 'url(#fretS)', stroke: '#c9a227', 'stroke-width': 1 }, F);
+    el('rect', { x: 440, y: 794, width: 720, height: 8, fill: '#000', opacity: .45 }, F);
+    // braziers with living flames
+    [445, 1155].forEach(x => {
+      el('circle', { class: 'bglow', cx: x, cy: 700, r: 170, fill: 'url(#goldGlow)', opacity: .55 }, F);
+      el('path', { d: `M${x - 30} 795 L${x - 42} 860 M${x + 30} 795 L${x + 42} 860 M${x} 805 L${x} 862`, stroke: '#3a2c16', 'stroke-width': 5, 'stroke-linecap': 'round' }, F);
+      el('path', { d: `M${x - 56} 770 Q${x} 834 ${x + 56} 770 Z`, fill: '#2a1f10', stroke: '#c9a227', 'stroke-width': 1.5 }, F);
+      el('path', { d: `M${x - 48} 784 Q${x} 828 ${x + 48} 784`, stroke: '#c9a227', 'stroke-width': 4, 'stroke-dasharray': '7 4', fill: 'none' }, F);
+      el('ellipse', { cx: x, cy: 770, rx: 56, ry: 8, fill: '#3a2a14', stroke: '#c9a227', 'stroke-width': 1 }, F);
+      el('ellipse', { cx: x, cy: 769, rx: 46, ry: 5, fill: '#c1121f', opacity: .85 }, F);
+      const fl = el('g', { transform: `translate(${x} 768)` }, F);
+      el('path', { class: 'fl', d: 'M0 0 C-36 -6 -26 -74 0 -136 C26 -74 36 -6 0 0Z', fill: '#c1121f', opacity: .9 }, fl);
+      el('path', { class: 'fl', d: 'M0 0 C-24 -4 -18 -52 0 -98 C18 -52 24 -4 0 0Z', fill: '#f2a43a' }, fl);
+      el('path', { class: 'fl', d: 'M0 0 C-12 -2 -9 -30 0 -58 C9 -30 12 -2 0 0Z', fill: '#fff1b8' }, fl);
+    });
+    // gold-bar hoards
+    function pile(cx, base, rows) {
+      const g = el('g', {}, F);
+      for (let r = 0; r < rows; r++) {
+        const n = rows - r;
+        for (let k = 0; k < n; k++) {
+          const x = cx + (k - (n - 1) / 2) * 66, y = base - r * 21;
+          el('path', { d: `M${x - 32} ${y} L${x + 32} ${y} L${x + 25} ${y - 19} L${x - 25} ${y - 19} Z`, fill: 'url(#barG)', stroke: '#6b4e10', 'stroke-width': 1 }, g);
+          el('path', { d: `M${x - 18} ${y - 9} h10 M${x + 4} ${y - 9} h12`, stroke: '#8c6d16', 'stroke-width': 1 }, g);
+          el('rect', { class: 'glint', x: x - 22, y: y - 18, width: 44, height: 3, fill: '#fff6d0', opacity: 0 }, g);
+        }
+      }
+      for (let i = 0; i < 10; i++) el('ellipse', { cx: f1(cx + R(-190, 190)), cy: f1(base + R(6, 18)), rx: f1(R(9, 15)), ry: f1(R(3.5, 6)), fill: 'url(#barG)', stroke: '#6b4e10' }, g);
+      for (let i = 0; i < 6; i++) sparkle(g, cx + R(-150, 150), base - R(0, 100), R(6, 11));
+    }
+    pile(220, 880, 5);
+    pile(1380, 880, 5);
+    // open chest spilling coins
+    const ch = el('g', {}, F);
+    el('path', { d: 'M538 822 L662 822 L676 786 L552 786 Z', fill: '#3a2412', stroke: '#c9a227', 'stroke-width': 1.2 }, ch);
+    for (let i = 0; i < 22; i++) el('ellipse', { cx: f1(R(548, 652)), cy: f1(R(812, 828)), rx: 7, ry: 3, fill: 'url(#barG)', stroke: '#6b4e10', 'stroke-width': .6 }, ch);
+    el('rect', { x: 538, y: 822, width: 124, height: 62, fill: '#4a2f18', stroke: '#1a0f06', 'stroke-width': 2 }, ch);
+    el('path', { d: 'M538 840 H662 M538 862 H662', stroke: '#2d1b0c', 'stroke-width': 1.5 }, ch);
+    el('rect', { x: 554, y: 822, width: 9, height: 62, fill: 'url(#barG)' }, ch);
+    el('rect', { x: 637, y: 822, width: 9, height: 62, fill: 'url(#barG)' }, ch);
+    el('circle', { cx: 600, cy: 846, r: 7, fill: 'url(#barG)', stroke: '#6b4e10' }, ch);
+    for (let i = 0; i < 12; i++) el('ellipse', { cx: f1(R(670, 730)), cy: f1(R(880, 896)), rx: 7, ry: 3, fill: 'url(#barG)', stroke: '#6b4e10', 'stroke-width': .6 }, ch);
+    sparkle(ch, 600, 812, 10);
+    // jade mask
+    const jm = el('g', {}, F);
+    el('ellipse', { cx: 800, cy: 895, rx: 48, ry: 6, fill: '#000', opacity: .5 }, jm);
+    el('path', { d: 'M768 826 L832 826 L828 866 Q800 894 772 866 Z', fill: '#2f7a5f', stroke: '#123b2e', 'stroke-width': 1.6 }, jm);
+    el('path', { d: 'M780 830 L790 860 M818 832 L812 866', stroke: '#5fb08e', 'stroke-width': 1, opacity: .5 }, jm);
+    el('rect', { x: 770, y: 823, width: 60, height: 7, fill: 'url(#barG)' }, jm);
+    el('ellipse', { cx: 786, cy: 845, rx: 8, ry: 3.2, fill: '#ece6d2' }, jm);
+    el('ellipse', { cx: 814, cy: 845, rx: 8, ry: 3.2, fill: '#ece6d2' }, jm);
+    el('circle', { cx: 786, cy: 845, r: 2, fill: '#0b0b0b' }, jm);
+    el('circle', { cx: 814, cy: 845, r: 2, fill: '#0b0b0b' }, jm);
+    el('path', { d: 'M797 848 L800 860 L803 848', stroke: '#123b2e', 'stroke-width': 1.5, fill: 'none' }, jm);
+    el('rect', { x: 789, y: 867, width: 22, height: 5, rx: 2, fill: '#0b1a14' }, jm);
+    el('path', { d: 'M792 867 v5 M796 867 v5 M800 867 v5 M804 867 v5 M808 867 v5', stroke: '#e8e4d0', 'stroke-width': 1 }, jm);
+    el('circle', { cx: 764, cy: 850, r: 7, fill: '#c9a227', stroke: '#6b4e10' }, jm);
+    el('circle', { cx: 836, cy: 850, r: 7, fill: '#c9a227', stroke: '#6b4e10' }, jm);
+    sparkle(jm, 830, 830, 8);
+    // painted jar overflowing with necklaces
+    const jr = el('g', {}, F);
+    el('path', { d: 'M972 812 Q930 830 935 862 Q945 894 1002 897 Q1060 894 1068 862 Q1072 830 1032 812 Z', fill: '#5a3a1e', stroke: '#2a1a0d', 'stroke-width': 1.5 }, jr);
+    el('rect', { x: 976, y: 798, width: 52, height: 16, rx: 3, fill: '#6a4524', stroke: '#2a1a0d' }, jr);
+    el('path', { d: 'M938 846 Q1002 858 1066 846', stroke: '#c9a227', 'stroke-width': 6, 'stroke-dasharray': '9 4', fill: 'none' }, jr);
+    el('path', { d: 'M942 868 Q1002 880 1062 868', stroke: '#8a0f14', 'stroke-width': 3, fill: 'none' }, jr);
+    for (let i = 0; i <= 18; i++) { const t = i / 18, x = 1004 + t * 90, y = 800 + Math.sin(t * Math.PI * .5) * 92 - Math.sin(t * Math.PI) * 18; el('circle', { cx: f1(x), cy: f1(y), r: 3.4, fill: i % 2 ? '#2f8f6a' : '#d9ad3a', stroke: '#4a360a', 'stroke-width': .5 }, jr); }
+    sparkle(jr, 1040, 805, 9);
+    // scattered treasure
+    for (let i = 0; i < 46; i++) {
+      const x = R(380, 1220), y = R(808, 898);
+      if (Math.abs(x - 800) < 60 || (x > 530 && x < 680) || (x > 925 && x < 1100)) continue;
+      if (Math.random() < .7) el('ellipse', { cx: f1(x), cy: f1(y), rx: f1(R(5, 9)), ry: f1(R(2.2, 3.6)), fill: 'url(#barG)', stroke: '#6b4e10', 'stroke-width': .6 }, F);
+      else { const s = R(3, 5); el('rect', { x: f1(x - s), y: f1(y - s), width: f1(s * 2), height: f1(s * 2), fill: pick(['#2f8f6a', '#c1121f', '#3b6f9f']), stroke: '#f2c94c', 'stroke-width': .7, transform: `rotate(45 ${f1(x)} ${f1(y)})` }, F); }
+    }
+  }
+  function buildSun() {
+    const C = [800, 450];
+    const out = $('#sunOuter'), oll = $('#sunOllin'), face = $('#sunFace');
+    const gold = '#c9a227', hi = '#f2c94c', dark = '#140f05';
+    el('circle', { cx: C[0], cy: C[1], r: 308, fill: dark, stroke: gold, 'stroke-width': 3 }, out);
+    el('circle', { cx: C[0], cy: C[1], r: 287, fill: 'none', stroke: hi, 'stroke-width': 16, 'stroke-dasharray': '26 9', opacity: .85 }, out);
+    el('circle', { cx: C[0], cy: C[1], r: 287, fill: 'none', stroke: '#8a0f14', 'stroke-width': 3, 'stroke-dasharray': '4 31', opacity: .9 }, out);
+    el('circle', { cx: C[0], cy: C[1], r: 266, fill: 'none', stroke: gold, 'stroke-width': 2 }, out);
+    for (let k = 0; k < 16; k++) {
+      const big = k % 2 === 0, a = k * Math.PI / 8 - Math.PI / 2;
+      const r0 = big ? 178 : 196, r1 = big ? 262 : 240, hw = big ? .085 : .05;
+      const p = (r, aa) => f1(C[0] + Math.cos(aa) * r) + ' ' + f1(C[1] + Math.sin(aa) * r);
+      el('path', { d: `M${p(r0, a - hw)} L${p(r1, a)} L${p(r0, a + hw)} Z`, fill: big ? gold : '#8c6d16', stroke: hi, 'stroke-width': 1, opacity: .9 }, out);
+      if (big) el('path', { d: `M${p(r0 + 20, a)} L${p(r1 - 22, a)}`, stroke: '#5a4410', 'stroke-width': 2 }, out);
+    }
+    for (let k = 0; k < 60; k++) { const a = k / 60 * Math.PI * 2; el('circle', { cx: f1(C[0] + Math.cos(a) * 173), cy: f1(C[1] + Math.sin(a) * 173), r: 2.4, fill: hi }, out); }
+    el('circle', { cx: C[0], cy: C[1], r: 167, fill: 'none', stroke: gold, 'stroke-width': 1.5 }, out);
+    el('circle', { cx: C[0], cy: C[1], r: 136, fill: 'none', stroke: gold, 'stroke-width': 1.5 }, out);
+    for (let k = 0; k < 20; k++) {
+      const g = el('g', { transform: `rotate(${k * 18} ${C[0]} ${C[1]})` }, out);
+      el('rect', { x: C[0] - 10, y: C[1] - 161, width: 20, height: 20, fill: '#21180a', stroke: hi, 'stroke-width': 1.3 }, g);
+      const t = k % 4;
+      if (t === 0) el('circle', { cx: C[0], cy: C[1] - 151, r: 5, fill: '#c1121f' }, g);
+      else if (t === 1) el('path', { d: `M${C[0] - 6} ${C[1] - 145} L${C[0]} ${C[1] - 157} L${C[0] + 6} ${C[1] - 145}Z`, fill: gold }, g);
+      else if (t === 2) el('path', { d: `M${C[0] - 6} ${C[1] - 151} q3 -6 6 0 t6 0`, stroke: '#2f8f6a', 'stroke-width': 2, fill: 'none' }, g);
+      else el('rect', { x: C[0] - 4, y: C[1] - 155, width: 8, height: 8, fill: 'none', stroke: gold, 'stroke-width': 1.5 }, g);
+    }
+    el('circle', { cx: C[0], cy: C[1], r: 128, fill: '#1a1307', stroke: gold, 'stroke-width': 1 }, oll);
+    for (let k = 0; k < 4; k++) {
+      const g = el('g', { transform: `rotate(${45 + k * 90} ${C[0]} ${C[1]})` }, oll);
+      el('rect', { x: C[0] - 22, y: C[1] - 118, width: 44, height: 44, fill: '#2a1f09', stroke: hi, 'stroke-width': 1.6, transform: `rotate(45 ${C[0]} ${C[1] - 96})` }, g);
+      el('circle', { cx: C[0], cy: C[1] - 96, r: 7, fill: gold }, g);
+      el('circle', { cx: C[0], cy: C[1] - 96, r: 3, fill: '#2f8f6a' }, g);
+    }
+    for (let k = 0; k < 4; k++) {
+      const g = el('g', { transform: `rotate(${k * 90} ${C[0]} ${C[1]})` }, oll);
+      el('path', { d: `M${C[0] - 10} ${C[1] - 58} L${C[0]} ${C[1] - 80} L${C[0] + 10} ${C[1] - 58} Z`, fill: hi }, g);
+    }
+    el('circle', { cx: C[0], cy: C[1], r: 52, fill: 'url(#faceG)', stroke: hi, 'stroke-width': 2 }, face);
+    el('rect', { x: 776, y: 430, width: 14, height: 6, fill: dark }, face);
+    el('rect', { x: 810, y: 430, width: 14, height: 6, fill: dark }, face);
+    el('path', { d: 'M774 424 h18 M808 424 h18', stroke: dark, 'stroke-width': 2 }, face);
+    el('path', { d: 'M796 440 L800 456 L804 440', fill: 'none', stroke: dark, 'stroke-width': 2 }, face);
+    el('rect', { x: 786, y: 462, width: 28, height: 5, fill: dark }, face);
+    el('path', { d: 'M794 467 L806 467 L800 494 Z', fill: '#8a0f14', stroke: '#2b0507' }, face);
+    el('circle', { cx: 744, cy: 452, r: 8, fill: 'none', stroke: hi, 'stroke-width': 2 }, face);
+    el('circle', { cx: 856, cy: 452, r: 8, fill: 'none', stroke: hi, 'stroke-width': 2 }, face);
+  }
+
+  // ---------- Scene 3 : causeway, bridge, march ----------
+  function buildNight() {
+    const city = $('#city');
+    el('rect', { x: 1080, y: 452, width: 600, height: 20, fill: '#090c11' }, city);
+    [[1180, 34, 30], [1250, 62, 44], [1345, 118, 82], [1450, 54, 40], [1530, 76, 52]].forEach(([cx, h, hw], idx) => {
+      for (let t = 0; t < 4; t++) { const w = hw * (1 - t * .2); el('rect', { x: cx - w, y: 472 - h * (t + 1) / 4, width: w * 2, height: h / 4 + .5, fill: '#090c11' }, city); }
+      if (idx === 2) {
+        el('rect', { x: cx - 28, y: 472 - h - 16, width: 18, height: 16, fill: '#090c11' }, city);
+        el('rect', { x: cx + 10, y: 472 - h - 16, width: 18, height: 16, fill: '#090c11' }, city);
+      }
+      el('circle', { class: 'fire', cx: f1(cx + R(-hw * .4, hw * .4)), cy: 472 - h - 3, r: 2.6, fill: '#ff5a2a', filter: 'url(#glow)' }, city);
+    });
+    const sh = $('#shimmer');
+    for (let i = 0; i < 22; i++) { const x = R(-50, 1600), y = R(480, 890), w = R(40, 170); el('line', { class: 'shim', x1: f1(x), y1: f1(y), x2: f1(x + w), y2: f1(y), stroke: '#aac0d4', 'stroke-opacity': .7, opacity: .12, 'stroke-width': 1 }, sh); }
+    const cw = $('#causeway');
+    function run(x0, x1) {
+      const n = Math.round((x1 - x0) / 80), w = (x1 - x0) / n;
+      for (let i = 0; i < n; i++) {
+        const x = x0 + i * w;
+        const g = el('g', { class: 'blk' + (Math.random() < .3 ? ' weak' : '') }, cw);
+        el('rect', { x: f1(x), y: 602, width: f1(w + .6), height: 26, fill: '#000', opacity: .35 }, g);
+        el('rect', { x: f1(x), y: 568, width: f1(w + .6), height: 34, fill: '#121821' }, g);
+        el('rect', { x: f1(x), y: 556, width: f1(w + .6), height: 12, fill: '#2c3643' }, g);
+        el('line', { x1: f1(x), y1: 556, x2: f1(x + w + .6), y2: 556, stroke: '#c8d7e6', 'stroke-opacity': .22 }, g);
+      }
+    }
+    run(-140, 700); run(820, 1740);
+    const br = $('#bridge');
+    el('rect', { class: 'plank', x: 700, y: 566, width: 5, height: 42, fill: '#2f1f10' }, br);
+    el('rect', { class: 'plank', x: 815, y: 566, width: 5, height: 42, fill: '#2f1f10' }, br);
+    el('rect', { class: 'plank', x: 690, y: 566, width: 140, height: 3, fill: '#3f2a16' }, br);
+    for (let x = 690; x < 830; x += 9) el('rect', { class: 'plank', x, y: 553, width: 7, height: 13, fill: '#5b3e22', stroke: '#2a1a0d', 'stroke-width': .6 }, br);
+    el('rect', { class: 'plank', x: 688, y: 549, width: 144, height: 4, fill: '#3f2a16' }, br);
+    const m = $('#march');
+    for (let i = 0; i < 30; i++) {
+      const g = el('g', { class: 'fig', transform: `translate(${880 + i * 24} 556)` }, m);
+      const b = el('g', { class: 'body' }, g);
+      if (i % 7 === 3) {
+        el('path', { d: 'M14 -10 Q2 -16 -12 -11 L-16 -18 L-19 -16 L-15 -8 Q-2 -5 14 -7 Z', fill: '#07090c' }, b);
+        el('path', { d: 'M11 -8 L12 0 M6 -7 L5 0 M-7 -8 L-6 0 M-11 -8 L-12 0', stroke: '#07090c', 'stroke-width': 2 }, b);
+        el('path', { d: 'M-3 -14 L0 -27 L3 -14Z', fill: '#07090c' }, b);
+        el('circle', { cx: 0, cy: -29.5, r: 3.4, fill: '#07090c' }, b);
+        el('path', { d: 'M-4.5 -31 Q0 -37 4.5 -31', stroke: '#7d8894', 'stroke-width': 1.2, fill: 'none' }, b);
+        el('path', { d: 'M-2 -18 L-14 -44', stroke: '#3c434c', 'stroke-width': 1.3 }, b);
+      } else {
+        el('path', { d: 'M-5 0 L-3 -15 L3 -15 L5 0 Z', fill: '#07090c' }, b);
+        el('circle', { cx: 0, cy: -18.5, r: 3.4, fill: '#07090c' }, b);
+        el('path', { d: 'M-4.5 -20 Q0 -26 4.5 -20', stroke: '#6f7a86', 'stroke-width': 1.2, fill: 'none' }, b);
+        if (Math.random() < .35) el('path', { d: 'M-4 -4 L-12 -34', stroke: '#3c434c', 'stroke-width': 1.2 }, b);
+      }
+      if (Math.random() < .5) el('rect', { class: 'loot', x: 3, y: -15, width: 7, height: 7, fill: '#c9a227', stroke: '#f2c94c', 'stroke-width': .5 }, b);
+    }
+    const fogs = $('#fogs');
+    for (let i = 0; i < 7; i++) el('ellipse', { class: 'fog', cx: f1(R(0, 1600)), cy: f1(R(430, 780)), rx: f1(R(480, 820)), ry: f1(R(45, 95)), fill: 'url(#fogG)' }, fogs);
+  }
+
+  // ---------- Scene 4 : war canoes, darts, drowning gold ----------
+  function buildChaos() {
+    function canoe(parent, x, y, s) {
+      const c = el('g', { class: 'canoe', 'data-x': x.toFixed(0), 'data-y': y.toFixed(0), 'data-s': s.toFixed(2), transform: `translate(-400 ${y.toFixed(0)}) scale(${s.toFixed(2)})` }, parent);
+      const r = el('g', { class: 'rock' }, c);
+      el('ellipse', { cx: 0, cy: 14, rx: 74, ry: 5, fill: '#000', opacity: .45 }, r);
+      [-36, -12, 12, 36].forEach((k, j) => {
+        el('path', { d: `M${k + 3} -6 L${k + 10} -42`, stroke: '#6a625c', 'stroke-width': 1.3 }, r);
+        el('path', { d: `M${k - 5} -2 L${k - 2} -16 L${k + 2} -16 L${k + 5} -2Z`, fill: '#0a0807' }, r);
+        el('circle', { cx: k, cy: -19.5, r: 3.3, fill: '#0a0807' }, r);
+        el('path', { d: `M${k - 3} -22 L${k} -35 L${k + 3} -22Z`, fill: j % 2 ? '#c9a227' : '#c1121f' }, r);
+        el('circle', { cx: k - 5, cy: -10, r: 4.6, fill: '#8a0f14', stroke: '#c9a227', 'stroke-width': .8 }, r);
+      });
+      el('path', { d: 'M-66 -6 Q0 4 66 -6 Q50 12 0 14 Q-50 12 -66 -6Z', fill: '#0b0807', stroke: '#8a0f14', 'stroke-width': 1.4 }, r);
+      el('path', { d: 'M-50 2 Q0 9 50 2', fill: 'none', stroke: '#c9a227', 'stroke-width': .9, opacity: .6 }, r);
+    }
+    const back = $('#s4back'), front = $('#canoesFront');
+    for (let i = 0; i < 7; i++) canoe(back, 80 + i * 230 + R(-40, 40), R(494, 528), R(.42, .58));
+    for (let i = 0; i < 12; i++) canoe(front, R(60, 1540), 640 + (i % 4) * 62 + R(-12, 12), R(.85, 1.35));
+    const sinks = $('#sinks');
+    for (let i = 0; i < 14; i++) {
+      const g = el('g', { class: 'sink', transform: 'translate(-500 -500)' }, sinks);
+      el('ellipse', { class: 'ring', cx: 0, cy: 0, rx: 1, ry: .3, fill: 'none', stroke: '#f2c94c', 'stroke-width': 1.4, opacity: 0 }, g);
+      el('ellipse', { class: 'ring', cx: 0, cy: 0, rx: 1, ry: .3, fill: 'none', stroke: '#c1121f', 'stroke-width': 1.2, opacity: 0 }, g);
+      const gd = el('g', { class: 'gold', opacity: 0 }, g);
+      el('path', { d: 'M-8 -2 L-12 -16 M8 -2 L13 -15', stroke: '#0b0d12', 'stroke-width': 2, 'stroke-linecap': 'round' }, gd);
+      el('circle', { cx: 0, cy: -5, r: 4.5, fill: '#0b0d12' }, gd);
+      el('path', { d: 'M-5 -7 Q0 -13 5 -7', fill: 'none', stroke: '#7d8894', 'stroke-width': 1.2 }, gd);
+      el('rect', { x: -5, y: -1, width: 10, height: 8, fill: '#e0b53a', stroke: '#f2c94c', 'stroke-width': .6 }, gd);
+    }
+    const v = $('#volley');
+    for (let i = 0; i < 28; i++) el('path', { class: 'arrow', d: 'M0 0 L38 0 M31 -3.5 L38 0 L31 3.5', stroke: '#e6dccb', 'stroke-width': 1.5, fill: 'none', opacity: 0 }, v);
+  }
+
+  // ---------- Scene 5 : the ahuehuete ----------
+  function buildTree() {
+    const crown = $('#crown');
+    const blobG = el('g', {}, crown), brG = el('g', {}, crown), wG = el('g', {}, crown);
+    const nodes = [];
+    function branch(x, y, a, len, w, d) {
+      a = Math.max(-3.05, Math.min(-.08, a));
+      const x2 = x + Math.cos(a) * len, y2 = y + Math.sin(a) * len;
+      const mx = (x + x2) / 2 + R(-14, 14), my = (y + y2) / 2 + R(-12, 6);
+      el('path', { d: `M${f1(x)} ${f1(y)} Q${f1(mx)} ${f1(my)} ${f1(x2)} ${f1(y2)}`, stroke: '#08080a', 'stroke-width': f1(w), fill: 'none', 'stroke-linecap': 'round' }, brG);
+      nodes.push({ x: x2, y: y2, d });
+      if (d > 0) {
+        branch(x2, y2, a - R(.25, .55), len * R(.62, .8), w * .62, d - 1);
+        branch(x2, y2, a + R(.25, .55), len * R(.62, .8), w * .62, d - 1);
+        if (Math.random() < .4) branch(x2, y2, a + R(-.2, .2), len * .55, w * .5, d - 1);
+      }
+    }
+    branch(764, 432, -2.8, 160, 26, 3);
+    branch(775, 422, -2.2, 135, 22, 3);
+    branch(800, 410, -1.57, 120, 22, 3);
+    branch(825, 422, -0.95, 135, 22, 3);
+    branch(840, 432, -0.34, 160, 26, 3);
+    nodes.forEach(n => {
+      if (n.d <= 1 && Math.random() < .55) el('ellipse', { cx: f1(n.x), cy: f1(n.y + 8), rx: f1(R(30, 62)), ry: f1(R(12, 24)), fill: '#0a0b0c', opacity: .6 }, blobG);
+      if (n.d <= 1) {
+        const g = el('g', { class: 'willow', 'data-x': f1(n.x), 'data-y': f1(n.y) }, wG);
+        const out = 1 + Math.abs(n.x - 800) / 380, cnt = 4 + Math.floor(Math.random() * 5);
+        for (let i = 0; i < cnt; i++) {
+          const L = R(40, 140) * out, x = n.x + R(-6, 6), feathery = Math.random() < .5;
+          el('path', {
+            d: `M${f1(x)} ${f1(n.y)} Q${f1(x + R(-12, 12))} ${f1(n.y + L * .55)} ${f1(x + R(-26, 26))} ${f1(n.y + L)}`,
+            stroke: '#0b0c0d', 'stroke-width': feathery ? f1(R(2.5, 4)) : f1(R(.7, 2)),
+            'stroke-dasharray': feathery ? '1.5 2.5' : 'none', fill: 'none', opacity: R(.55, .95).toFixed(2)
+          }, g);
+        }
+      }
+    });
+  }
+
+  buildSky(); buildCity(); buildRoom(); buildSun(); buildNight(); buildChaos(); buildTree();
+  const SNAP = world.innerHTML;
+
+  // credit name → individual letters
+  const tName = $('#tName');
+  tName.innerHTML = [...tName.textContent].map(c => `<span>${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+  const crName = $('#crName');
+  crName.innerHTML = [...crName.textContent].map(c => `<span>${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+
+  /* ============================================================
+     PARTICLES
+     ============================================================ */
+  const LOOK = [
+    { c1: '#1b2c44', c2: '#04060c', fx: { count: 45,  vy: -0.15, wind: 0.1,  len: 0,   size: 1.4, jitter: 0.1,  sway: 0.3, r: 200, g: 210, b: 235, alpha: .3 } },
+    { c1: '#14282a', c2: '#030405', fx: { count: 90,  vy: -0.35, wind: 0.15, len: 0,   size: 1.8, jitter: 0.25, sway: 0.4, r: 150, g: 150, b: 150, alpha: .4 } },
+    { c1: '#5c3c0c', c2: '#0a0603', fx: { count: 170, vy: -0.6,  wind: 0,    len: 0,   size: 2.2, jitter: 0.3,  sway: 0.6, r: 242, g: 201, b: 76,  alpha: .7 } },
+    { c1: '#1f2a36', c2: '#04060a', fx: { count: 650, vy: 20,    wind: -4,   len: 1.1, size: 1.1, jitter: 0,    sway: 0,   r: 160, g: 180, b: 200, alpha: .45 } },
+    { c1: '#4a080b', c2: '#060102', fx: { count: 750, vy: 14,    wind: -7,   len: .9,  size: 1.6, jitter: 2.5,  sway: 2,   r: 225, g: 45,  b: 38,  alpha: .6 } },
+    { c1: '#15171b', c2: '#000000', fx: { count: 55,  vy: 0.45,  wind: 0.2,  len: 0,   size: 1.8, jitter: 0.2,  sway: 0.5, r: 115, g: 115, b: 120, alpha: .4 } },
+    { c1: '#000000', c2: '#000000', fx: { count: 0,   vy: 0.45,  wind: 0.2,  len: 0,   size: 1.8, jitter: 0.2,  sway: 0.5, r: 115, g: 115, b: 120, alpha: 0 } },
+  ];
+  const FX = { ...LOOK[0].fx };
+  const cv = $('#fx'), ctx = cv.getContext('2d');
+  let W = 0, H = 0;
+  function resize() {
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = innerWidth; H = innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resize(); addEventListener('resize', resize);
+  const parts = Array.from({ length: 800 }, () => ({ x: R(0, innerWidth), y: R(0, innerHeight), k: R(.6, 1.4), f: R(.5, 2), ph: R(0, 6.28), a: R(.3, 1), s: R(.6, 1.4) }));
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(3, (now - last) / 16.67); last = now;
+    ctx.clearRect(0, 0, W, H);
+    const n = Math.min(parts.length, FX.count | 0), t = now / 1000;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = `rgb(${FX.r | 0},${FX.g | 0},${FX.b | 0})`;
+    for (let i = 0; i < n; i++) {
+      const p = parts[i], bvx = FX.wind * p.k, bvy = FX.vy * p.k;
+      p.x += (bvx + Math.sin(t * p.f + p.ph) * FX.sway + (Math.random() - .5) * FX.jitter) * dt;
+      p.y += (bvy + (Math.random() - .5) * FX.jitter * .5) * dt;
+      if (p.y > H + 30) { p.y = -30; p.x = R(-100, W + 100); }
+      else if (p.y < -30) { p.y = H + 30; p.x = R(-100, W + 100); }
+      if (p.x < -120) p.x += W + 240; else if (p.x > W + 120) p.x -= W + 240;
+      ctx.globalAlpha = FX.alpha * p.a;
+      ctx.lineWidth = FX.size * p.s;
+      ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x - bvx * FX.len - .01, p.y - bvy * FX.len); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  function look(n, dur) {
+    const L = LOOK[n], tl = gsap.timeline();
+    tl.to(document.documentElement, { '--c1': L.c1, '--c2': L.c2, duration: dur || .001, ease: 'sine.inOut' }, 0)
+      .to(FX, { ...L.fx, duration: dur || .001, ease: 'sine.inOut' }, 0);
+    return tl;
+  }
+
+  /* ============================================================
+     AMBIENT LOOPS
+     ============================================================ */
+  const S = { sky: false, storm: false, chaos: false, shake: 0 };
+
+  function meteor() {
+    if (!S.sky) return;
+    const m = $('#meteor');
+    m.setAttribute('transform', `translate(${f1(R(150, 1300))} ${f1(R(30, 300))})`);
+    gsap.timeline({ onComplete: () => gsap.delayedCall(R(4, 9), meteor) })
+      .set(m, { opacity: 1 })
+      .fromTo(m, { strokeDashoffset: 40 }, { strokeDashoffset: -140, duration: .7, ease: 'power1.in' })
+      .set(m, { opacity: 0 });
+  }
+  function amb0() {
+    S.sky = true;
+    $$('.tw').forEach(s => gsap.to(s, { opacity: R(.08, .35), duration: R(.8, 2.6), yoyo: true, repeat: -1, ease: 'sine.inOut', delay: R(0, 2) }));
+    $$('.tw2').forEach(s => gsap.to(s, { scale: R(.35, .65), opacity: .45, transformOrigin: '50% 50%', duration: R(1, 2.2), yoyo: true, repeat: -1, ease: 'sine.inOut' }));
+    gsap.to('#cloudsBack', { x: -140, duration: 60, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    gsap.to('#cloudsMid', { x: 190, duration: 45, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    gsap.to('#cloudsFrontDrift', { x: -260, duration: 38, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    $$('.puff').forEach((p, i) => {
+      gsap.fromTo(p, { x: 0, y: 0, scale: .4, transformOrigin: '50% 50%' }, { x: R(60, 130), y: -190, scale: 2.4, duration: 9, ease: 'sine.out', repeat: -1, delay: i * 1.3 });
+      gsap.fromTo(p, { opacity: 0 }, { opacity: .5, duration: 4.5, yoyo: true, repeat: -1, ease: 'sine.inOut', delay: i * 1.3 });
+    });
+    $$('.fire0').forEach(f => gsap.to(f, { opacity: .3, duration: R(.1, .25), yoyo: true, repeat: -1 }));
+    $$('.shim0').forEach(s => gsap.to(s, { opacity: .1, x: R(-20, 20), duration: R(1.5, 3), yoyo: true, repeat: -1, ease: 'sine.inOut' }));
+    const eg = $('#eagle'), o = { t: 0 };
+    gsap.to(o, { t: Math.PI * 2, duration: 34, repeat: -1, ease: 'none', onUpdate() {
+      const x = 800 + Math.cos(o.t) * 430, y = 330 + Math.sin(o.t) * 80, s = .85 + Math.sin(o.t) * .2;
+      eg.setAttribute('transform', `translate(${f1(x)} ${f1(y)}) scale(${s.toFixed(3)}) rotate(${f1(Math.cos(o.t) * -8)})`);
+    } });
+    gsap.to('#eagleWings', { scaleY: .5, transformOrigin: '50% 50%', duration: .5, yoyo: true, repeat: -1, repeatDelay: 1.6, ease: 'sine.inOut' });
+    gsap.delayedCall(2.5, meteor);
+  }
+  function amb1() {
+    gsap.to('#s1b', { scale: 1.03, svgOrigin: '800 450', duration: 9, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    $$('.rip').forEach((r, i) => gsap.to(r, { strokeDashoffset: (i % 2 ? 1 : -1) * 380, duration: 30 + i * 6, repeat: -1, ease: 'none' }));
+    gsap.to('#wavesA', { opacity: .25, duration: 2.2, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    gsap.fromTo('#wavesB', { opacity: .25 }, { opacity: 1, duration: 2.2, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    gsap.to('#preGlow', { opacity: .6, duration: 2.5, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    gsap.to('#quarters', { opacity: .3, duration: 1.1, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    gsap.to('#popoSmoke', { strokeDashoffset: -90, duration: 6, repeat: -1, ease: 'none' });
+    const run = $('#runner'), L = run.getTotalLength();
+    gsap.fromTo(run, { strokeDasharray: `70 ${L + 100}`, strokeDashoffset: 0 }, { strokeDashoffset: -L - 70, duration: 4.5, repeat: -1, repeatDelay: 1.5, ease: 'power1.in' });
+    $$('.lc').forEach(c => gsap.to(c, { x: R(15, 45), duration: R(7, 13), yoyo: true, repeat: -1, ease: 'sine.inOut' }));
+    $$('.cs').forEach(c => gsap.fromTo(c, { x: -500 }, { x: 2100, duration: R(80, 120), repeat: -1, ease: 'none' }).progress(Math.random()));
+    gsap.fromTo('#egrets', { x: -200, y: 0 }, { x: 1800, y: -160, duration: 42, repeat: -1, ease: 'none' }).progress(.15);
+    $$('.egret').forEach(b => gsap.to(b, { scaleY: .3, transformOrigin: '50% 50%', duration: .35, yoyo: true, repeat: -1, delay: R(0, .3) }));
+  }
+  function amb2() {
+    gsap.to('#sunOuter', { rotation: 360, svgOrigin: '800 450', duration: 140, repeat: -1, ease: 'none' });
+    gsap.to('#sunOllin', { rotation: -360, svgOrigin: '800 450', duration: 200, repeat: -1, ease: 'none' });
+    gsap.to('#halo', { opacity: .85, scale: 1.06, svgOrigin: '800 450', duration: 3, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    gsap.to('#sunBlur', { attr: { stdDeviation: 16 }, duration: 2.4, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    gsap.to('.glint', { opacity: .85, duration: .35, ease: 'sine.inOut', stagger: { each: .4, from: 'random', repeat: -1, yoyo: true, repeatDelay: 4 } });
+    gsap.to('.spark', { opacity: .95, scale: 1.3, transformOrigin: '50% 50%', duration: .4, ease: 'sine.inOut', stagger: { each: .55, from: 'random', repeat: -1, yoyo: true, repeatDelay: 5 } });
+    $$('.fl').forEach(f => gsap.to(f, { scaleY: () => R(.82, 1.22), scaleX: () => R(.88, 1.1), skewX: () => R(-7, 7), transformOrigin: '50% 100%', duration: R(.12, .22), repeat: -1, repeatRefresh: true, ease: 'sine.inOut' }));
+    $$('.bglow').forEach(g => gsap.to(g, { opacity: .8, duration: R(.18, .3), repeat: -1, yoyo: true, ease: 'sine.inOut' }));
+    $$('.ray').forEach((r, i) => gsap.to(r, { opacity: .11, duration: 3 + i, yoyo: true, repeat: -1, ease: 'sine.inOut' }));
+  }
+  function lightning() {
+    if (!S.storm) return;
+    const bolt = $('#bolt');
+    let x = R(150, 1450), y = -20, d = `M${x.toFixed(0)} ${y}`;
+    while (y < 465) { x += R(-42, 42); y += R(20, 55); d += ` L${x.toFixed(0)} ${Math.min(y, 468).toFixed(0)}`; }
+    bolt.setAttribute('d', d);
+    gsap.timeline({ onComplete: () => gsap.delayedCall(R(3, 8), lightning) })
+      .set('#flash', { backgroundColor: '#cfdcff' }, 0)
+      .fromTo('#flash', { opacity: .35 }, { opacity: 0, duration: .12 }, 0)
+      .fromTo(bolt, { opacity: 1 }, { opacity: 0, duration: .3 }, 0)
+      .fromTo('#flash', { opacity: .22 }, { opacity: 0, duration: .45 }, .16);
+  }
+  function fogDrift() {
+    $$('.fog').forEach((f, i) => gsap.to(f, { x: (i % 2 ? 1 : -1) * R(150, 280), duration: R(18, 30), yoyo: true, repeat: -1, ease: 'sine.inOut' }));
+  }
+  function amb3() {
+    fogDrift();
+    gsap.to('#march', { x: -760, duration: 55, ease: 'none' });
+    $$('.fig .body').forEach(b => gsap.to(b, { y: -1.6, duration: .32, yoyo: true, repeat: -1, ease: 'sine.inOut', delay: R(0, .6) }));
+    $$('.fire').forEach(f => gsap.to(f, { opacity: R(.2, .5), duration: R(.08, .2), yoyo: true, repeat: -1 }));
+    $$('.shim').forEach(s => gsap.to(s, { opacity: R(.04, .3), x: R(-30, 30), duration: R(1.5, 3), yoyo: true, repeat: -1, ease: 'sine.inOut' }));
+    gsap.delayedCall(1.5, lightning);
+  }
+
+  const CST = new Map();
+  function canoeState(c) {
+    if (!CST.has(c)) CST.set(c, { x: -400, y: +c.dataset.y, s: +c.dataset.s, dx: 0 });
+    return CST.get(c);
+  }
+  function placeCanoe(c) {
+    const st = canoeState(c);
+    c.setAttribute('transform', `translate(${f1(st.x + st.dx)} ${f1(st.y)}) scale(${st.s})`);
+  }
+  function shakeLoop() {
+    if (!S.chaos && S.shake < .05) { gsap.to('#cam', { x: 0, y: 0, rotation: 0, svgOrigin: '800 450', duration: .4 }); return; }
+    const a = S.shake;
+    gsap.to('#cam', { x: R(-a, a), y: R(-a * .7, a * .7), rotation: R(-a * .03, a * .03), svgOrigin: '800 450', duration: R(.04, .09), ease: 'none', onComplete: shakeLoop });
+  }
+  function shoot(a) {
+    if (!S.chaos) { a.setAttribute('opacity', 0); return; }
+    const low = Math.random() < .65;
+    const sx = R(-60, 1660), sy = low ? R(700, 950) : R(470, 520), ex = sx + R(-320, 320), ey = R(520, 590);
+    const o = { t: 0 };
+    a.setAttribute('opacity', .9);
+    gsap.to(o, { t: 1, duration: R(.35, .6), ease: 'none',
+      onUpdate() {
+        const pt = t => [sx + (ex - sx) * t, sy + (ey - sy) * t - Math.sin(t * Math.PI) * 70];
+        const [x, y] = pt(o.t), [nx, ny] = pt(o.t + .02);
+        a.setAttribute('transform', `translate(${f1(x)} ${f1(y)}) rotate(${f1(Math.atan2(ny - y, nx - x) * 180 / Math.PI)})`);
+      },
+      onComplete() { a.setAttribute('opacity', 0); gsap.delayedCall(R(.1, 1.2), () => shoot(a)); } });
+  }
+  function sink(g) {
+    if (!S.chaos) return;
+    const x = R(80, 1520), y = Math.random() < .75 ? R(630, 870) : R(485, 535);
+    g.setAttribute('transform', `translate(${x.toFixed(0)} ${y.toFixed(0)}) scale(${y < 600 ? .55 : 1})`);
+    const [r1, r2] = g.querySelectorAll('.ring'), gold = g.querySelector('.gold');
+    gsap.timeline({ onComplete: () => gsap.delayedCall(R(.2, 1.5), () => sink(g)) })
+      .fromTo(gold, { y: -40, opacity: 1 }, { y: 0, duration: .4, ease: 'power2.in' })
+      .to(gold, { y: 16, opacity: 0, duration: .7, ease: 'power1.in' })
+      .fromTo(r1, { attr: { rx: 2, ry: .6 }, opacity: .9 }, { attr: { rx: 48, ry: 13 }, opacity: 0, duration: 1.5, ease: 'power2.out' }, .4)
+      .fromTo(r2, { attr: { rx: 2, ry: .6 }, opacity: .7 }, { attr: { rx: 28, ry: 8 }, opacity: 0, duration: 1.1, ease: 'power2.out' }, .6);
+  }
+  function redPulse() {
+    if (!S.chaos) return;
+    gsap.fromTo('#flash', { opacity: R(.22, .5) }, { opacity: R(.04, .14), duration: R(.3, .9), ease: 'power2.out', onComplete: () => gsap.delayedCall(R(.1, .9), redPulse) });
+  }
+  function amb4a() {
+    gsap.set('#flash', { backgroundColor: '#c1121f' });
+    $$('.canoe .rock').forEach(r => gsap.fromTo(r, { rotation: R(-5, -2) }, { rotation: R(2, 5), transformOrigin: '50% 50%', duration: R(.6, 1.1), yoyo: true, repeat: -1, ease: 'sine.inOut' }));
+    $$('.arrow').forEach((a, i) => gsap.delayedCall(i * .12, () => shoot(a)));
+    $$('.sink').forEach((g, i) => gsap.delayedCall(i * .3, () => sink(g)));
+    redPulse();
+  }
+  function amb4b() {
+    $$('.canoe').forEach(c => gsap.to(canoeState(c), { dx: R(-70, 70), duration: R(3, 5), yoyo: true, repeat: -1, ease: 'sine.inOut', onUpdate: () => placeCanoe(c) }));
+  }
+  function amb5() {
+    $$('.willow').forEach(w => {
+      gsap.set(w, { svgOrigin: `${w.dataset.x} ${w.dataset.y}` });
+      gsap.fromTo(w, { rotation: R(-3, -1.2) }, { rotation: R(1.2, 3), duration: R(3, 5.5), yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    });
+    gsap.fromTo('#crown', { rotation: -.4 }, { rotation: .5, svgOrigin: '800 652', duration: 6, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    gsap.to('#moonHalo', { scale: 1.05, svgOrigin: '930 280', duration: 5, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+  }
+
+  /* ============================================================
+     TRANSITIONS
+     ============================================================ */
+
+  // the city assembling itself as the camera arrives
+  function cityDraw() {
+    const tl = gsap.timeline();
+    tl.from('#island', { opacity: 0, duration: 1.4 }, 0)
+      .from('.ch', { opacity: 0, duration: .6, stagger: (i, t) => +t.dataset.d * .005 }, .2)
+      .from('#canals', { opacity: 0, duration: 1.5 }, .6)
+      .from('#precinct, #preGlow', { opacity: 0, scale: .6, svgOrigin: '800 452', duration: 1.4, ease: 'back.out(1.6)' }, 1)
+      .from('.cwd', { opacity: 0, duration: 1.2 }, 2)
+      .from('#quarters', { opacity: 0, duration: 1 }, 2.4);
+    $$('.cw').forEach(p => {
+      const L = p.getTotalLength();
+      tl.fromTo(p, { strokeDasharray: L, strokeDashoffset: L }, { strokeDashoffset: 0, duration: 2.2, ease: 'power2.inOut' }, .5);
+    });
+    return tl;
+  }
+
+  // 0 → 1 : the camera tilts down from the stars to the island
+  function t01() {
+    S.sky = false;
+    const tl = gsap.timeline();
+    gsap.set('#s1', { opacity: 1, y: 900 });
+    tl.to('#title', { opacity: 0, y: -120, duration: 2.2, ease: 'power2.in' }, 0)
+      .to('#s0', { y: -900, duration: 5.4, ease: 'power2.inOut' }, 0)
+      .to('#cloudsFront', { y: -650, duration: 5.4, ease: 'power2.inOut' }, 0)
+      .to('#cloudsMid', { y: -250, duration: 5.4, ease: 'power2.inOut' }, 0)
+      .to('#s1', { y: 0, duration: 5.4, ease: 'power2.inOut' }, 0)
+      .add(look(1, 4), .8)
+      .add(cityDraw(), 2.8)
+      .call(amb1, null, 5.4)
+      .call(() => gsap.killTweensOf($$('#s0 *')), null, 5.5)
+      .set('#s0', { display: 'none' }, 5.5);
+    return tl;
+  }
+
+  // 1 → 2 : dive into the heart of the city (log-scale zoom)
+  function t12() {
+    const tl = gsap.timeline(), z = { v: 0 };
+    gsap.set('#s2', { opacity: 0 });
+    gsap.set('#s2z', { scale: 1 / 16, svgOrigin: '800 452' });
+    tl.to(z, { v: 1, duration: 4.4, ease: 'power2.inOut',
+      onUpdate() {
+        const s = Math.pow(16, z.v);
+        gsap.set('#s1z', { scale: s, svgOrigin: '800 452' });
+        gsap.set('#s2z', { scale: s / 16, svgOrigin: '800 452' });
+      } }, 0)
+      .to('#s2', { opacity: 1, duration: 1.6, ease: 'sine.inOut' }, 1.4)
+      .to('#s1', { opacity: 0, duration: 1.4, ease: 'sine.in' }, 2.7)
+      .add(look(2, 3), 1.2)
+      .call(amb2, null, 1.5)
+      .call(() => gsap.killTweensOf($$('#s1 *')), null, 4.4)
+      .set('#s1', { display: 'none' }, 4.4);
+    return tl;
+  }
+
+  // 2 → 3 : the gold bleeds out, the storm bleeds in
+  function t23() {
+    gsap.killTweensOf('#halo, #sunBlur');
+    const tl = gsap.timeline();
+    tl.to('#sunSat, #roomSat', { attr: { values: 0 }, duration: 4, ease: 'sine.inOut' }, 0)
+      .to('#sunBlur', { attr: { stdDeviation: 0 }, duration: 3 }, 0)
+      .to('#halo', { opacity: 0, duration: 3.5 }, 0)
+      .to('#sunAll', { y: 140, scale: .85, svgOrigin: '800 450', opacity: 0, duration: 5, ease: 'power2.in' }, 1)
+      .to('#roomFront', { opacity: 0, y: 60, duration: 3.5 }, 1.2)
+      .to('#roomBack', { opacity: 0, duration: 4 }, 1.5)
+      .add(look(3, 5), .8)
+      .fromTo('#night', { opacity: 0 }, { opacity: 1, duration: 3.5, ease: 'sine.inOut' }, 2.5)
+      .fromTo('.blk', { opacity: 0 }, { opacity: 1, duration: 1.6, stagger: { each: .04, from: 'end' } }, 3)
+      .fromTo('#march', { opacity: 0 }, { opacity: 1, duration: 2 }, 4.5)
+      .call(() => { S.storm = true; amb3(); }, null, 3)
+      .fromTo('.plank', { y: -60, opacity: 0 }, { y: 0, opacity: 1, duration: .5, stagger: .07, ease: 'power2.out' }, 5.2)
+      .call(() => gsap.killTweensOf($$('#s2 *')), null, 6.9)
+      .set('#s2', { display: 'none' }, 7);
+    return tl;
+  }
+
+  // 3 → 4 : the alarm, the ambush, the drowning
+  function t34() {
+    S.storm = false;
+    gsap.killTweensOf('.fig .body');
+    gsap.killTweensOf('#flash');
+    const tl = gsap.timeline();
+    tl.set('#flash', { backgroundColor: '#ffffff' }, 0)
+      .fromTo('#flash', { opacity: .9 }, { opacity: 0, duration: .22 }, 0)
+      .set('#flash', { backgroundColor: '#c1121f' }, .22)
+      .fromTo('#flash', { opacity: .75 }, { opacity: .15, duration: .7 }, .22)
+      .call(() => { S.chaos = true; S.shake = 14; shakeLoop(); }, null, .2)
+      .add(look(4, .8), .2)
+      .to('#s4back, #s4front', { opacity: 1, duration: .4 }, .2)
+      .to('#redWater', { opacity: .38, duration: 2 }, .3)
+      .to('.plank', { x: () => R(-150, 150), y: () => R(140, 320), rotation: () => R(-200, 200), opacity: 0, duration: 1.4, ease: 'power2.in', stagger: { each: .03, from: 'random' } }, .25)
+      .to('.blk:not(.weak)', { y: () => R(6, 40), rotation: () => R(-14, 14), transformOrigin: '50% 50%', duration: 1.2, ease: 'back.out(2)', stagger: { each: .04, from: 'random' } }, .3)
+      .to('.blk.weak', { y: 170, rotation: () => R(-30, 30), transformOrigin: '50% 50%', opacity: 0, duration: 2.2, ease: 'power2.in', stagger: .12 }, 1)
+      .to('.fig .body', { y: () => R(50, 150), rotation: () => R(-120, 120), transformOrigin: '50% 100%', opacity: 0, duration: 1.6, ease: 'power2.in', stagger: { each: .16, from: 'random' } }, .9)
+      .call(amb4a, null, 1);
+    $$('.canoe').forEach((c, i) => {
+      const st = canoeState(c), tx = +c.dataset.x;
+      st.x = tx < 800 ? -260 : 1860; st.dx = 0;
+      tl.to(st, { x: tx, duration: R(1.5, 2.6), ease: 'power3.out', onUpdate: () => placeCanoe(c) }, .4 + i * .11);
+    });
+    tl.call(amb4b, null, 5);
+    return tl;
+  }
+
+  function finale(tl, at) {
+    tl.to('#moon', { opacity: 0, duration: 13, ease: 'sine.in' }, at)
+      .to('#moonHalo', { opacity: 0, duration: 12, ease: 'sine.in' }, at)
+      .to('#rim', { opacity: 0, duration: 9 }, at)
+      .to('#lostGold', { opacity: 0, duration: 8 }, at + 1)
+      .to('#ground', { opacity: .25, duration: 12 }, at)
+      .to(FX, { alpha: 0, duration: 10 }, at + 3)
+      .to('#black', { opacity: 1, duration: 7, ease: 'power1.in' }, at + 9);
+    return tl;
+  }
+
+  // 4 → 5 : everything dissolves; the tree remains
+  function t45() {
+    const tl = gsap.timeline();
+    $('#night').setAttribute('filter', 'url(#nightBlur)');
+    tl.call(() => { S.chaos = false; }, null, 0)
+      .to(S, { shake: 0, duration: 1.5 }, 0)
+      .to('#flash', { opacity: 0, duration: 1.2 }, .2)
+      .to('#nbBlur', { attr: { stdDeviation: 18 }, duration: 3, ease: 'power2.in' }, 0)
+      .to('#night', { opacity: 0, duration: 2.6, ease: 'power1.in' }, 1)
+      .add(look(5, 4), .5)
+      .set('#night', { display: 'none' }, 4)
+      .fromTo('#s5', { opacity: 0 }, { opacity: 1, duration: 4, ease: 'sine.inOut' }, 3)
+      .fromTo('#moon', { opacity: 0, y: 30 }, { opacity: .85, y: 0, duration: 5, ease: 'sine.out' }, 3)
+      .fromTo('#crown', { opacity: 0 }, { opacity: 1, duration: 4 }, 3.6)
+      .call(amb5, null, 3);
+    return finale(tl, 13);
+  }
+
+  // 5 → 6 : credit
+  function creditIn(tl, at) {
+    tl.set('#credit', { opacity: 1 }, at)
+      .fromTo('.cr-by', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 1.8, ease: 'power2.out' }, at + .3)
+      .fromTo('.cr-name span', { opacity: 0, y: 18, filter: 'blur(6px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.4, ease: 'power2.out', stagger: .05 }, at + .8);
+    return tl;
+  }
+  function t56() {
+    const tl = gsap.timeline();
+    tl.to('#black', { opacity: 1, duration: 1 }, 0);
+    return creditIn(tl, .8);
+  }
+
+  /* ============================================================
+     RESTING STATES (start + stepping backward)
+     ============================================================ */
+  const hideAll = sel => gsap.set(sel, { display: 'none' });
+  const SET = [
+    () => {
+      look(0, 0); amb0();
+      const t = gsap.timeline();
+      t.set('#title', { opacity: 1, y: 0 }, 0)
+        .fromTo('#tName span', { opacity: 0, y: 20, filter: 'blur(8px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.8, ease: 'power2.out', stagger: .07 }, 1.4);
+      return null;
+    },
+    () => { look(1, 0); hideAll('#s0'); gsap.set('#s1', { opacity: 1, y: 0 }); amb1(); return null; },
+    () => { look(2, 0); hideAll('#s0, #s1'); gsap.set('#s2', { opacity: 1 }); amb2(); return null; },
+    () => { look(3, 0); hideAll('#s0, #s1, #s2'); gsap.set('#night', { opacity: 1 }); S.storm = true; amb3(); return null; },
+    () => {
+      look(4, 0); hideAll('#s0, #s1, #s2');
+      gsap.set('#night, #s4back, #s4front', { opacity: 1 });
+      gsap.set('.plank', { opacity: 0 });
+      gsap.set('.blk:not(.weak)', { y: () => R(6, 40), rotation: () => R(-14, 14), transformOrigin: '50% 50%' });
+      gsap.set('.blk.weak, .fig', { opacity: 0 });
+      gsap.set('#redWater', { opacity: .38 });
+      fogDrift();
+      $$('.canoe').forEach(c => { canoeState(c).x = +c.dataset.x; placeCanoe(c); });
+      S.chaos = true; S.shake = 14; shakeLoop();
+      amb4a(); amb4b();
+      return null;
+    },
+    () => { look(5, 0); hideAll('#s0, #s1, #s2, #night'); gsap.set('#s5', { opacity: 1 }); amb5(); return finale(gsap.timeline(), 6); },
+    () => { look(6, 0); hideAll('#s0, #s1, #s2, #night, #s5'); return creditIn(gsap.timeline(), .3); }
+  ];
+  const T = [null, t01, t12, t23, t34, t45, t56];
+  const LAST = T.length - 1;
+
+  /* ============================================================
+     CONTROLLER
+     ============================================================ */
+  let cur = 0, tl = null, jumping = false;
+  const black = $('#black');
+
+  function jump(n) {
+    if (jumping) return;
+    jumping = true;
+    gsap.globalTimeline.clear();
+    gsap.to('#credit, #title', { opacity: 0, duration: .5 });
+    gsap.to(black, { opacity: 1, duration: .5, onComplete() {
+      requestAnimationFrame(() => {
+        gsap.globalTimeline.clear();
+        world.innerHTML = SNAP;
+        CST.clear();
+        S.sky = S.storm = S.chaos = false; S.shake = 0;
+        gsap.set('#cam', { x: 0, y: 0, rotation: 0 });
+        gsap.set('#flash, #credit, #title', { opacity: 0 });
+        cur = n;
+        tl = SET[n]();
+        gsap.to(black, { opacity: 0, duration: n === 0 ? 2.4 : 1.1, ease: 'sine.inOut', onComplete: () => { jumping = false; } });
+      });
+    } });
+  }
+  function next() {
+    if (jumping) return;
+    if (tl && tl.isActive()) { tl.timeScale(cur === 5 ? 4 : 6); return; }
+    if (cur === LAST) { jump(0); return; }
+    cur++;
+    tl = T[cur]();
+  }
+  function prev() {
+    if (jumping) return;
+    jump(Math.max(0, cur - 1));
+  }
+
+  addEventListener('keydown', e => {
+    if (['ArrowRight', 'ArrowDown', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); next(); }
+    else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); prev(); }
+    else if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen?.(); else document.exitFullscreen?.();
+    }
+  });
+  addEventListener('click', next);
+  addEventListener('contextmenu', e => { e.preventDefault(); prev(); });
+
+  jump(0);
+})();
+</script>
+</body>
+</html>
